@@ -14,7 +14,6 @@
 
         body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; color: #333; }
 
-        /* Шапка PiaLink */
         .pia-header { background: var(--pia-navy); padding: 18px 16px; color: white; display: flex; align-items: center; justify-content: space-between; }
         .pia-logo { display: flex; align-items: center; font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
         .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
@@ -23,25 +22,19 @@
         .container { padding: 16px; }
         .section-header { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--pia-navy); margin-bottom: 8px; letter-spacing: 1px; opacity: 0.8; }
 
-        /* Ввод комментария */
         textarea { width: 100%; height: 95px; border-radius: 10px; border: 1px solid #dcdfe6; padding: 14px; font-size: 16px; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; resize: none; outline: none; }
         textarea:focus { border-color: var(--pia-gold); }
 
-        /* Кнопки */
         .btn { width: 100%; padding: 18px; border-radius: 10px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
         .btn-gold { background: var(--pia-gold); color: white; box-shadow: 0 4px 12px rgba(225, 162, 62, 0.2); }
         .btn-outline { background: none; border: 2px solid var(--pia-navy); color: var(--pia-navy); margin-top: 10px; }
         .btn:active { transform: scale(0.98); opacity: 0.9; }
 
-        /* Карточки блоков */
         .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 24px; font-size: 14px; line-height: 1.6; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow-wrap: break-word; }
-        
         .card-status { display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--pia-navy); }
         .status-badge { background: var(--pia-navy); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; }
-
         .card-details { border-left: 5px solid var(--pia-gold); }
 
-        /* Спиннер загрузки */
         .loader { border: 2px solid #f3f3f3; border-top: 2px solid var(--pia-gold); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -77,19 +70,13 @@
         </div>
 
         <div class="section-header" style="margin-top: 30px;">История переписки</div>
-        <div id="history-box" class="card">
-            <div class="loader"></div> Загрузка истории...
-        </div>
+        <div id="history-box" class="card"><div class="loader"></div> Загрузка...</div>
 
         <div class="section-header">Ответственный и статус</div>
-        <div id="status-box" class="card card-status">
-            <div class="loader"></div> Получение статуса...
-        </div>
+        <div id="status-box" class="card card-status"><div class="loader"></div> Загрузка...</div>
 
         <div class="section-header">Детали заявки</div>
-        <div id="details-box" class="card card-details">
-            <div class="loader"></div> Загрузка параметров...
-        </div>
+        <div id="details-box" class="card card-details"><div class="loader"></div> Загрузка...</div>
     </div>
 
     <script>
@@ -105,8 +92,13 @@
         let savedCommentId = ""; 
         let savedCommentText = "";
 
-        // ФУНКЦИЯ ОТПРАВКИ (Теперь с USER ID)
+        // УЛЬТРА-НАДЕЖНАЯ ОТПРАВКА
         function sendToBpium(action, extraData = {}) {
+            // Вытаскиваем данные пользователя максимально явно
+            const userData = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : { id: "unknown" };
+            
+            console.log("Sending user data:", userData); // Для отладки в консоли
+
             return fetch(webhookUrl, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -115,8 +107,8 @@
                     record_id: recId,
                     message_id: msgId,
                     chat_id: chatId,
-                    initData: tg.initData, // Безопасная строка для проверки
-                    user: tg.initDataUnsafe.user, // <--- ВОТ ОН, ТВОЙ USER ID И ИМЯ
+                    initData: tg.initData,
+                    user: userData, // <--- ВОТ ОН, ТОЧНО ТУТ!
                     ...extraData
                 })
             });
@@ -126,12 +118,9 @@
             sendToBpium('load_data')
             .then(res => res.json())
             .then(data => {
-                document.getElementById('history-box').innerHTML = data.history_html || "История комментариев пуста";
+                document.getElementById('history-box').innerHTML = data.history_html || "История пуста";
                 document.getElementById('status-box').innerHTML = data.status_html || "Статус не определен";
                 document.getElementById('details-box').innerHTML = data.details_html || "Данные не загружены";
-            })
-            .catch(() => {
-                document.getElementById('history-box').innerText = "Ошибка связи с системой";
             });
         }
 
@@ -141,7 +130,6 @@
             const text = document.getElementById('comment').value;
             if (!text.trim()) return;
             savedCommentText = text;
-
             sendToBpium('save_comment', { comment: text })
             .then(res => res.json())
             .then(data => {
@@ -154,13 +142,9 @@
 
         function confirmSend(isAgreed) {
             if (isAgreed) {
-                sendToBpium('confirm_send', { 
-                    comment_id: savedCommentId, 
-                    comment: savedCommentText 
-                }).then(() => tg.close());
-            } else {
-                tg.close();
-            }
+                sendToBpium('confirm_send', { comment_id: savedCommentId, comment: savedCommentText })
+                .then(() => tg.close());
+            } else { tg.close(); }
         }
     </script>
 </body>
