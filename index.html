@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { background: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); font-family: sans-serif; padding: 20px; text-align: center; }
+        textarea { width: 100%; height: 150px; border-radius: 12px; border: 1px solid #ccc; padding: 15px; box-sizing: border-box; font-size: 16px; margin-top: 10px; background: #fff; color: #000; }
+        button { width: 100%; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 18px; border-radius: 12px; margin-top: 20px; cursor: pointer; font-weight: bold; font-size: 18px; }
+        .title { font-weight: bold; font-size: 18px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="title">Новый комментарий</div>
+    <textarea id="comment" placeholder="Напишите детали тут..."></textarea>
+    <button id="send">ОТПРАВИТЬ</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Берем ID записи из ссылки
+        const urlParams = new URLSearchParams(window.location.search);
+        const recId = urlParams.get('rec_id');
+
+        document.getElementById('send').addEventListener('click', () => {
+            const text = document.getElementById('comment').value;
+            if (!text.trim()) {
+                alert("Поле не может быть пустым!");
+                return;
+            }
+
+            // Твой хук уже здесь!
+            const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    record_id: recId,
+                    comment: text,
+                    user: tg.initDataUnsafe.user
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    tg.close(); // Закрываем окно при успехе
+                } else {
+                    alert("Ошибка Bpium: " + response.status);
+                }
+            })
+            .catch(err => alert("Ошибка сети: " + err));
+        });
+    </script>
+</body>
+</html>
