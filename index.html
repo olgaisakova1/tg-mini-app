@@ -14,7 +14,6 @@
 
         body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; color: #333; -webkit-tap-highlight-color: transparent; }
 
-        /* Шапка PiaLink */
         .pia-header { background: var(--pia-navy); padding: 18px 16px; color: white; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .pia-logo { display: flex; align-items: center; font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
         .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
@@ -23,33 +22,36 @@
         .container { padding: 16px; padding-bottom: 40px; }
         .section-header { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--pia-navy); margin-bottom: 8px; letter-spacing: 1px; opacity: 0.6; }
 
-        textarea { width: 100%; height: 95px; border-radius: 12px; border: 1px solid #dcdfe6; padding: 14px; font-size: 16px; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; resize: none; outline: none; transition: 0.3s; }
-        textarea:focus { border-color: var(--pia-gold); box-shadow: 0 0 0 3px rgba(225, 162, 62, 0.1); }
+        textarea { width: 100%; height: 95px; border-radius: 12px; border: 1px solid #dcdfe6; padding: 14px; font-size: 16px; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; resize: none; outline: none; }
+        textarea:focus { border-color: var(--pia-gold); }
 
         /* Кнопки */
-        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-gold { background: var(--pia-gold); color: white; box-shadow: 0 4px 15px rgba(225, 162, 62, 0.3); text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .btn-outline { background: none; border: 2px solid var(--pia-navy); color: var(--pia-navy); margin-top: 10px; opacity: 0.8; }
-        .btn:active { transform: scale(0.97); }
+        .btn { padding: 16px; border-radius: 12px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-gold { background: var(--pia-gold); color: white; box-shadow: 0 4px 15px rgba(225, 162, 62, 0.2); }
+        .btn-grey { background: #e0e0e0; color: #757575; }
+        .btn:active { transform: scale(0.96); }
 
-        /* Карточки */
-        .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 24px; font-size: 14px; line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
+        /* Группа кнопок в ряд */
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-group .btn { flex: 1; }
+
+        .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 24px; font-size: 14px; line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         
-        /* ЦВЕТОВАЯ КАРТА СТАТУСОВ */
-        .card-status { border-left: 5px solid var(--pia-navy); }
-        .status-badge { padding: 6px 12px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid transparent; }
+        /* Статусы */
+        .card-status { border-left: 5px solid var(--pia-navy); display: flex; justify-content: space-between; align-items: center; }
+        .status-badge { padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; background: #eee; color: #666; }
         
-        .st-new { background: #eef2f7; color: #5a6b7d; border-color: #d0d9e4; } /* Новая */
-        .st-transfer { background: #fff8e1; color: #b78103; border-color: #ffecb3; } /* Передана */
-        .st-work { background: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; } /* В работе */
+        /* Цвета статусов */
+        .status-badge.st-new { background: #eef2f7; color: #5a6b7d; border-color: #d0d9e4; }
+        .status-badge.st-transfer { background: #fff8e1; color: #b78103; border-color: #ffecb3; }
+        .status-badge.st-work { background: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; }
 
         .card-details { border-left: 5px solid var(--pia-gold); }
-
-        .loader { border: 2px solid #f3f3f3; border-top: 2px solid var(--pia-gold); border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+        .loader { border: 2px solid #f3f3f3; border-top: 2px solid var(--pia-gold); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .hidden { display: none; }
-        #my-comment-preview { border: 1px dashed #ddd; padding: 14px; border-radius: 12px; margin-bottom: 16px; background: #fafafa; font-style: italic; color: #555; }
+        #my-comment-preview { border: 1px dashed #ddd; padding: 14px; border-radius: 12px; margin-bottom: 12px; background: #fafafa; font-style: italic; color: #555; }
     </style>
 </head>
 <body>
@@ -65,31 +67,31 @@
     <div class="container">
         <div id="step-input">
             <div class="section-header">Ваш комментарий</div>
-            <textarea id="comment" placeholder="Напишите сообщение..."></textarea>
-            <button class="btn btn-gold" id="save-btn" onclick="saveComment()">
-                СОХРАНИТЬ
-            </button>
+            <textarea id="comment" placeholder="Текст для базы..."></textarea>
+            <button class="btn btn-gold" style="width:100%" id="save-btn" onclick="saveComment()">СОХРАНИТЬ</button>
         </div>
 
         <div id="step-confirm" class="hidden">
-            <div class="section-header">Комментарий готов</div>
+            <div class="section-header">Текст сохранен в базе</div>
             <div id="my-comment-preview"></div>
-            <div style="text-align: center; margin-bottom: 20px; font-weight: 600; font-size: 14px; color: var(--pia-navy);">
-                Отправить текст застройщику?
+            
+            <div style="font-weight: 700; font-size: 11px; color: var(--pia-navy); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 20px;">
+                Отправить обратную связь застройщику
             </div>
-            <button class="btn btn-gold" id="confirm-btn" onclick="confirmSend(true)">
-                <span style="font-size: 18px; color: white;">✉️</span> ОТПРАВИТЬ ОТВЕТ
-            </button>
-            <button class="btn btn-outline" onclick="confirmSend(false)">ОСТАВИТЬ В БАЗЕ</button>
+
+            <div class="btn-group">
+                <button class="btn btn-grey" onclick="tg.close()">ОТМЕНА</button>
+                <button class="btn btn-gold" id="confirm-btn" onclick="confirmSend(true)">
+                    <span style="font-size: 16px;">✉️</span> ОТПРАВИТЬ
+                </button>
+            </div>
         </div>
 
         <div class="section-header" style="margin-top: 30px;" id="history-title">История переписки</div>
         <div id="history-box" class="card"><div class="loader"></div></div>
 
-        <div class="section-header">Текущий статус</div>
-        <div id="status-box" class="card card-status">
-            <div class="loader"></div>
-        </div>
+        <div class="section-header">Статус и Ответственный</div>
+        <div id="status-box" class="card card-status"><div class="loader"></div></div>
 
         <div class="section-header">Детали заявки</div>
         <div id="details-box" class="card card-details"><div class="loader"></div></div>
@@ -126,16 +128,16 @@
                 document.getElementById('history-box').innerHTML = data.history_html || "История пуста";
                 if (data.history_count !== undefined) document.getElementById('history-title').innerText = `История (${data.history_count})`;
                 
-                // ЛОГИКА СТАТУСОВ
-                let statusClass = "st-new";
-                const lowerStatus = (data.status_text || "").toLowerCase();
-                if (lowerStatus.includes("передан")) statusClass = "st-transfer";
-                if (lowerStatus.includes("работе")) statusClass = "st-work";
-
-                document.getElementById('status-box').innerHTML = `
-                    <div><b>Менеджер:</b> ${data.manager_name || 'Не назначен'}</div>
-                    <div class="status-badge ${statusClass}">${data.status_text || 'Новая'}</div>
-                `;
+                // Статус и покраска
+                const statusBox = document.getElementById('status-box');
+                statusBox.innerHTML = data.status_html || "Не определен";
+                const badge = statusBox.querySelector('.status-badge');
+                if (badge) {
+                    const t = badge.innerText.toLowerCase();
+                    if (t.includes("новая")) badge.classList.add('st-new');
+                    if (t.includes("передана")) badge.classList.add('st-transfer');
+                    if (t.includes("работе")) badge.classList.add('st-work');
+                }
 
                 document.getElementById('details-box').innerHTML = data.details_html || "Нет данных";
             });
@@ -164,12 +166,10 @@
         }
 
         function confirmSend(isAgreed) {
-            if (isAgreed) {
-                const btn = document.getElementById('confirm-btn');
-                btn.innerHTML = '<div class="loader" style="border-top-color:white;"></div>';
-                sendToBpium('confirm_send', { comment_id: window.commentIdFromBpium, comment: savedText })
-                .then(() => tg.close());
-            } else { tg.close(); }
+            const btn = document.getElementById('confirm-btn');
+            btn.innerHTML = '<div class="loader" style="border-top-color:white;"></div>';
+            sendToBpium('confirm_send', { comment_id: window.commentIdFromBpium, comment: savedText })
+            .then(() => tg.close());
         }
     </script>
 </body>
