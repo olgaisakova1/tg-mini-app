@@ -42,7 +42,6 @@
         .card-details { border-left: 5px solid var(--pia-gold); }
 
         /* Спиннер загрузки */
-        .loader-box { text-align: center; padding: 10px; color: var(--text-hint); }
         .loader { border: 2px solid #f3f3f3; border-top: 2px solid var(--pia-gold); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -103,10 +102,10 @@
         const chatId = urlParams.get('chat_id');
         const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
 
-        // Память для второго шага
         let savedCommentId = ""; 
         let savedCommentText = "";
 
+        // ФУНКЦИЯ ОТПРАВКИ (Теперь с USER ID)
         function sendToBpium(action, extraData = {}) {
             return fetch(webhookUrl, {
                 method: 'POST',
@@ -116,13 +115,13 @@
                     record_id: recId,
                     message_id: msgId,
                     chat_id: chatId,
-                    initData: tg.initData, // Безопасность
+                    initData: tg.initData, // Безопасная строка для проверки
+                    user: tg.initDataUnsafe.user, // <--- ВОТ ОН, ТВОЙ USER ID И ИМЯ
                     ...extraData
                 })
             });
         }
 
-        // Загрузка данных при открытии
         function loadData() {
             sendToBpium('load_data')
             .then(res => res.json())
@@ -138,26 +137,21 @@
 
         loadData();
 
-        // Логика кнопки "СОХРАНИТЬ"
         function saveComment() {
             const text = document.getElementById('comment').value;
             if (!text.trim()) return;
-
             savedCommentText = text;
 
             sendToBpium('save_comment', { comment: text })
             .then(res => res.json())
             .then(data => {
-                // Запоминаем ID комментария, который прислал Бипиум
                 savedCommentId = data.comment_id; 
-                
                 document.getElementById('my-comment-preview').innerText = text;
                 document.getElementById('step-input').classList.add('hidden');
                 document.getElementById('step-confirm').classList.remove('hidden');
             });
         }
 
-        // Логика кнопок "ДА / НЕТ"
         function confirmSend(isAgreed) {
             if (isAgreed) {
                 sendToBpium('confirm_send', { 
