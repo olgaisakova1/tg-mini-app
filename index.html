@@ -128,7 +128,7 @@
                 document.getElementById('step-confirm').classList.remove('hidden');
             });
         }
-        function sendToBpium(action, extraData = {}) {
+      function sendToBpium(action, extraData = {}) {
     return fetch(webhookUrl, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -137,8 +137,7 @@
             record_id: recId,
             message_id: msgId,
             chat_id: chatId,
-            // Вместо "user" отправляем защищенную строку целиком
-            initData: tg.initData, 
+            initData: tg.initData, // <--- Это и есть наш "запечатанный конверт"
             ...extraData
         })
     });
