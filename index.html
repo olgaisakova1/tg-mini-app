@@ -119,10 +119,8 @@
                 return;
             }
 
-            // Твой хук
             const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
 
-            // Легкая вибрация при нажатии
             tg.HapticFeedback.impactOccurred('medium');
 
             fetch(webhookUrl, {
