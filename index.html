@@ -20,18 +20,17 @@
             color: var(--text);
             margin: 0; padding: 16px;
             display: flex; flex-direction: column;
+            min-height: 100vh;
         }
 
         .header { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--tg-blue); }
         
-        /* Стили полей */
         textarea {
             width: 100%; height: 100px; border-radius: 12px; border: 1px solid #ddd;
             padding: 12px; font-size: 16px; background: var(--secondary); color: var(--text);
-            box-sizing: border-box; outline: none; margin-bottom: 12px;
+            box-sizing: border-box; outline: none; margin-bottom: 12px; font-family: inherit;
         }
 
-        /* Кнопки */
         .btn {
             width: 100%; padding: 16px; border-radius: 12px; border: none;
             font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s;
@@ -39,38 +38,39 @@
         .btn-primary { background-color: var(--tg-blue); color: #fff; }
         .btn-outline { background: none; border: 1px solid #ddd; margin-top: 8px; color: var(--hint); }
 
-        /* История и Детали */
-        .card { background: var(--secondary); border-radius: 12px; padding: 12px; margin-top: 16px; font-size: 14px; }
+        .card { background: var(--secondary); border-radius: 12px; padding: 12px; margin-top: 16px; font-size: 14px; line-height: 1.5; }
         .card-details { border-left: 4px solid var(--tg-blue); }
-        .section-title { font-size: 12px; text-transform: uppercase; color: var(--hint); margin-bottom: 8px; font-weight: 700; }
+        .section-title { font-size: 11px; text-transform: uppercase; color: var(--hint); margin-top: 24px; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px; }
 
         .hidden { display: none; }
+        #my-comment-preview { background: #fff; padding: 10px; border-radius: 8px; border: 1px dashed var(--tg-blue); margin-bottom: 16px; }
     </style>
 </head>
 <body>
 
     <div id="step-input">
         <div class="header">Новый комментарий</div>
-        <textarea id="comment" placeholder="Ваш текст..."></textarea>
+        <textarea id="comment" placeholder="Напишите ваш ответ здесь..."></textarea>
         <button class="btn btn-primary" onclick="saveComment()">СОХРАНИТЬ</button>
     </div>
 
     <div id="step-confirm" class="hidden">
-        <div class="header">Комментарий сохранен</div>
-        <div id="my-comment-preview" style="font-style: italic; margin-bottom: 16px;"></div>
-        <div class="section-title">Отправить обратную связь менеджеру застройщика?</div>
+        <div class="header">Комментарий записан</div>
+        <div id="my-comment-preview"></div>
+        <div class="section-title">Отправить эту обратную связь застройщику?</div>
         <button class="btn btn-primary" onclick="confirmSend(true)">ДА, ОТПРАВИТЬ</button>
-        <button class="btn btn-outline" onclick="confirmSend(false)">НЕТ, ЗАКРЫТЬ</button>
+        <button class="btn btn-outline" onclick="confirmSend(false)">НЕТ, ПРОСТО ЗАКРЫТЬ</button>
     </div>
 
-    <div class="section-title" style="margin-top: 24px;">История комментариев</div>
+    <div class="section-title">История переписки</div>
     <div id="history-box" class="card">Загрузка истории...</div>
 
-    <div class="section-title" style="margin-top: 24px;">Детали заявки</div>
-    <div id="details-box" class="card card-details">Загрузка данных...</div>
+    <div class="section-title">Детали заявки</div>
+    <div id="details-box" class="card card-details">Загрузка данных заявки...</div>
 
     <script>
         const tg = window.Telegram.WebApp;
+        tg.ready();
         tg.expand();
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -78,22 +78,33 @@
         const msgId = urlParams.get('msg_id');
         const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
 
-        // 1. ЗАГРУЗКА ДАННЫХ ПРИ ОТКРЫТИИ
-        fetch(webhookUrl, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ action: 'load_data', record_id: recId })
-        })
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('history-box').innerHTML = data.history_html || "Истории пока нет";
-            document.getElementById('details-box').innerHTML = data.details_html || "Данные не найдены";
-        });
+        // Функция первичной загрузки данных
+        function loadData() {
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ action: 'load_data', record_id: recId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('history-box').innerHTML = data.history_html || "История пуста";
+                document.getElementById('details-box').innerHTML = data.details_html || "Данные не найдены";
+            })
+            .catch(() => {
+                document.getElementById('history-box').innerText = "Ошибка загрузки данных";
+            });
+        }
 
-        // 2. ПЕРВЫЙ ШАГ: СОХРАНЕНИЕ
+        // Вызываем загрузку при старте
+        loadData();
+
+        // Логика кнопки СОХРАНИТЬ
         function saveComment() {
             const text = document.getElementById('comment').value;
-            if (!text.trim()) return;
+            if (!text.trim()) {
+                tg.HapticFeedback.notificationOccurred('error');
+                return;
+            }
 
             fetch(webhookUrl, {
                 method: 'POST',
@@ -105,14 +116,16 @@
                     comment: text 
                 })
             }).then(() => {
+                tg.HapticFeedback.impactOccurred('medium');
                 document.getElementById('my-comment-preview').innerText = text;
                 document.getElementById('step-input').classList.add('hidden');
                 document.getElementById('step-confirm').classList.remove('hidden');
             });
         }
 
-        // 3. ВТОРОЙ ШАГ: ПОДТВЕРЖДЕНИЕ
+        // Логика кнопки ДА/НЕТ
         function confirmSend(isAgreed) {
+            tg.HapticFeedback.impactOccurred('light');
             if (isAgreed) {
                 fetch(webhookUrl, {
                     method: 'POST',
