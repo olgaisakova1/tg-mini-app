@@ -12,40 +12,45 @@
             --bg-light: #f4f6f9;
         }
 
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; color: #333; }
 
-        .pia-header { background: var(--pia-navy); padding: 20px 16px; color: white; display: flex; align-items: center; justify-content: space-between; }
-        .pia-logo { display: flex; align-items: center; font-weight: 700; font-size: 18px; }
+        .pia-header { background: var(--pia-navy); padding: 18px 16px; color: white; display: flex; align-items: center; justify-content: space-between; }
+        .pia-logo { display: flex; align-items: center; font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
         .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
-        .logo-icon div { width: 6px; height: 6px; background: var(--pia-gold); }
+        .logo-icon div { width: 5px; height: 5px; background: var(--pia-gold); }
 
-        .container { padding: 20px 16px; }
-        .section-header { font-size: 12px; text-transform: uppercase; font-weight: 700; color: var(--pia-navy); margin-bottom: 8px; letter-spacing: 1px; }
+        .container { padding: 16px; }
+        .section-header { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--pia-navy); margin-bottom: 8px; letter-spacing: 1px; opacity: 0.8; }
 
-        textarea { width: 100%; height: 100px; border-radius: 8px; border: 1px solid #dcdfe6; padding: 14px; font-size: 16px; margin-bottom: 16px; box-sizing: border-box; font-family: inherit; }
+        /* Поле ввода */
+        textarea { width: 100%; height: 90px; border-radius: 10px; border: 1px solid #dcdfe6; padding: 14px; font-size: 16px; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; resize: none; }
 
-        .btn { width: 100%; padding: 18px; border-radius: 8px; border: none; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
-        .btn-gold { background: var(--pia-gold); color: white; box-shadow: 0 4px 14px rgba(225, 162, 62, 0.3); }
-        .btn-outline { background: none; border: 2px solid var(--pia-navy); color: var(--pia-navy); margin-top: 12px; }
+        .btn { width: 100%; padding: 16px; border-radius: 10px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-gold { background: var(--pia-gold); color: white; box-shadow: 0 4px 12px rgba(225, 162, 62, 0.2); }
+        .btn-outline { background: none; border: 2px solid var(--pia-navy); color: var(--pia-navy); margin-top: 10px; }
 
-        .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 20px; font-size: 14px; line-height: 1.6; border-left: 4px solid var(--pia-gold); position: relative; min-height: 50px; }
-
-        /* СПИННЕР ЗАГРУЗКИ */
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--pia-gold);
-            border-radius: 50%;
-            width: 20px; height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-right: 10px;
-            vertical-align: middle;
+        /* Стили карточек */
+        .card { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 20px; font-size: 14px; line-height: 1.5; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        
+        /* Блок статуса (выделенный) */
+        .card-status { 
+            background: #fff; 
+            border: 1px solid #e0e6ed;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-left: 4px solid var(--pia-navy);
         }
+        .status-badge { background: var(--pia-navy); color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
 
+        /* Блок деталей (заявка) */
+        .card-details { border-left: 4px solid var(--pia-gold); }
+
+        .loader { border: 2px solid #f3f3f3; border-top: 2px solid var(--pia-gold); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .hidden { display: none; }
-        #my-comment-preview { border: 1px dashed var(--pia-gold); padding: 12px; border-radius: 8px; margin-bottom: 16px; }
+        #my-comment-preview { border: 1px dashed var(--pia-gold); padding: 12px; border-radius: 8px; margin-bottom: 16px; background: #fffdf5; }
     </style>
 </head>
 <body>
@@ -55,30 +60,34 @@
             <div class="logo-icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
             PiaWork
         </div>
-        <div style="font-size: 11px; opacity: 0.7;">v. 2.0</div>
+        <div style="font-size: 10px; opacity: 0.6;">v. 2.1</div>
     </div>
 
     <div class="container">
         <div id="step-input">
-            <div class="section-header">Ваш комментарий</div>
-            <textarea id="comment" placeholder="Напишите детали..."></textarea>
+            <textarea id="comment" placeholder="Напишите комментарий..."></textarea>
             <button class="btn btn-gold" onclick="saveComment()">СОХРАНИТЬ</button>
         </div>
 
         <div id="step-confirm" class="hidden">
-            <div class="section-header">Комментарий записан</div>
+            <div class="section-header">Ваш текст записан</div>
             <div id="my-comment-preview"></div>
-            <button class="btn btn-gold" onclick="confirmSend(true)">ДА, ОТПРАВИТЬ</button>
-            <button class="btn btn-outline" onclick="confirmSend(false)">НЕТ, ЗАКРЫТЬ</button>
+            <button class="btn btn-gold" onclick="confirmSend(true)">ДА, ОТПРАВИТЬ ЗАСТРОЙЩИКУ</button>
+            <button class="btn btn-outline" onclick="confirmSend(false)">НЕТ, ПРОСТО ЗАКРЫТЬ</button>
         </div>
 
-        <div class="section-header" style="margin-top: 30px;">История переписки</div>
+        <div class="section-header" style="margin-top: 24px;">История переписки</div>
         <div id="history-box" class="card">
             <div class="loader"></div> Загрузка истории...
         </div>
 
+        <div class="section-header">Текущий статус</div>
+        <div id="status-box" class="card card-status">
+            <div class="loader"></div> Определение статуса...
+        </div>
+
         <div class="section-header">Детали объекта</div>
-        <div id="details-box" class="card">
+        <div id="details-box" class="card card-details">
             <div class="loader"></div> Загрузка параметров...
         </div>
     </div>
@@ -99,7 +108,7 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     action: action, record_id: recId, message_id: msgId, chat_id: chatId,
-                    user: tg.initDataUnsafe.user, ...extraData
+                    initData: tg.initData, ...extraData
                 })
             });
         }
@@ -108,11 +117,12 @@
             sendToBpium('load_data')
             .then(res => res.json())
             .then(data => {
-                document.getElementById('history-box').innerHTML = data.history_html || "Истории пока нет";
-                document.getElementById('details-box').innerHTML = data.details_html || "Данные не загружены";
+                document.getElementById('history-box').innerHTML = data.history_html || "История комментариев пока пуста";
+                document.getElementById('status-box').innerHTML = data.status_html || "Статус не определен";
+                document.getElementById('details-box').innerHTML = data.details_html || "Данные объекта недоступны";
             })
             .catch(() => {
-                document.getElementById('history-box').innerText = "Ошибка загрузки";
+                document.getElementById('history-box').innerText = "Ошибка загрузки данных";
             });
         }
 
@@ -128,20 +138,12 @@
                 document.getElementById('step-confirm').classList.remove('hidden');
             });
         }
-      function sendToBpium(action, extraData = {}) {
-    return fetch(webhookUrl, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            action: action,
-            record_id: recId,
-            message_id: msgId,
-            chat_id: chatId,
-            initData: tg.initData, // <--- Это и есть наш "запечатанный конверт"
-            ...extraData
-        })
-    });
-}
+
+        function confirmSend(isAgreed) {
+            if (isAgreed) {
+                sendToBpium('confirm_send').then(() => tg.close());
+            } else { tg.close(); }
+        }
     </script>
 </body>
 </html>
