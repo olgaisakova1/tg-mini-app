@@ -7,13 +7,14 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --pia-navy: #1d2a45;
-            --pia-gold: #e1a23e;
+            --pia-navy: #1d2a45; /* Темно-синий из CRM */
+            --pia-gold: #e1a23e; /* Золото из CRM */
             --bg-light: #f4f6f9;
         }
 
         body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; color: #333; }
 
+        /* Шапка PiaWork */
         .pia-header { background: var(--pia-navy); padding: 18px 16px; color: white; display: flex; align-items: center; justify-content: space-between; }
         .pia-logo { display: flex; align-items: center; font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
         .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
@@ -22,35 +23,31 @@
         .container { padding: 16px; }
         .section-header { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--pia-navy); margin-bottom: 8px; letter-spacing: 1px; opacity: 0.8; }
 
-        /* Поле ввода */
-        textarea { width: 100%; height: 90px; border-radius: 10px; border: 1px solid #dcdfe6; padding: 14px; font-size: 16px; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; resize: none; }
+        /* Ввод текста */
+        textarea { width: 100%; height: 95px; border-radius: 10px; border: 1px solid #dcdfe6; padding: 14px; font-size: 16px; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; resize: none; }
 
-        .btn { width: 100%; padding: 16px; border-radius: 10px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        /* Кнопки */
+        .btn { width: 100%; padding: 18px; border-radius: 10px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
         .btn-gold { background: var(--pia-gold); color: white; box-shadow: 0 4px 12px rgba(225, 162, 62, 0.2); }
         .btn-outline { background: none; border: 2px solid var(--pia-navy); color: var(--pia-navy); margin-top: 10px; }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
 
-        /* Стили карточек */
-        .card { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 20px; font-size: 14px; line-height: 1.5; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        /* Карточки блоков */
+        .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 24px; font-size: 14px; line-height: 1.6; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         
-        /* Блок статуса (выделенный) */
-        .card-status { 
-            background: #fff; 
-            border: 1px solid #e0e6ed;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            border-left: 4px solid var(--pia-navy);
-        }
-        .status-badge { background: var(--pia-navy); color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        /* Блок статуса */
+        .card-status { display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--pia-navy); }
+        .status-badge { background: var(--pia-navy); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; }
 
-        /* Блок деталей (заявка) */
-        .card-details { border-left: 4px solid var(--pia-gold); }
+        /* Блок деталей заявки */
+        .card-details { border-left: 5px solid var(--pia-gold); }
 
+        /* Спиннер загрузки */
         .loader { border: 2px solid #f3f3f3; border-top: 2px solid var(--pia-gold); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .hidden { display: none; }
-        #my-comment-preview { border: 1px dashed var(--pia-gold); padding: 12px; border-radius: 8px; margin-bottom: 16px; background: #fffdf5; }
+        #my-comment-preview { border: 1px dashed var(--pia-gold); padding: 14px; border-radius: 10px; margin-bottom: 16px; background: #fff; font-style: italic; color: var(--pia-navy); }
     </style>
 </head>
 <body>
@@ -60,33 +57,37 @@
             <div class="logo-icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
             PiaWork
         </div>
-        <div style="font-size: 10px; opacity: 0.6;">v. 2.1</div>
+        <div style="font-size: 10px; opacity: 0.6;">Telegram App</div>
     </div>
 
     <div class="container">
         <div id="step-input">
-            <textarea id="comment" placeholder="Напишите комментарий..."></textarea>
+            <div class="section-header">Ваш комментарий</div>
+            <textarea id="comment" placeholder="Введите текст..."></textarea>
             <button class="btn btn-gold" onclick="saveComment()">СОХРАНИТЬ</button>
         </div>
 
         <div id="step-confirm" class="hidden">
-            <div class="section-header">Ваш текст записан</div>
+            <div class="section-header">Комментарий готов к отправке</div>
             <div id="my-comment-preview"></div>
-            <button class="btn btn-gold" onclick="confirmSend(true)">ДА, ОТПРАВИТЬ ЗАСТРОЙЩИКУ</button>
+            <div style="text-align: center; margin-bottom: 15px; font-weight: 600; font-size: 14px;">
+                Отправить застройщику?
+            </div>
+            <button class="btn btn-gold" onclick="confirmSend(true)">ДА, ОТПРАВИТЬ</button>
             <button class="btn btn-outline" onclick="confirmSend(false)">НЕТ, ПРОСТО ЗАКРЫТЬ</button>
         </div>
 
-        <div class="section-header" style="margin-top: 24px;">История переписки</div>
+        <div class="section-header" style="margin-top: 30px;">История комментариев</div>
         <div id="history-box" class="card">
             <div class="loader"></div> Загрузка истории...
         </div>
 
-        <div class="section-header">Текущий статус</div>
+        <div class="section-header">Ответственный и статус</div>
         <div id="status-box" class="card card-status">
-            <div class="loader"></div> Определение статуса...
+            <div class="loader"></div> Получение статуса...
         </div>
 
-        <div class="section-header">Детали объекта</div>
+        <div class="section-header">Детали заявки</div>
         <div id="details-box" class="card card-details">
             <div class="loader"></div> Загрузка параметров...
         </div>
@@ -102,24 +103,34 @@
         const chatId = urlParams.get('chat_id');
         const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
 
+        // Глобальные переменные для "памяти" приложения
+        let savedCommentId = ""; 
+        let savedCommentText = "";
+
+        // Универсальный отправщик в Bpium
         function sendToBpium(action, extraData = {}) {
             return fetch(webhookUrl, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    action: action, record_id: recId, message_id: msgId, chat_id: chatId,
-                    initData: tg.initData, ...extraData
+                    action: action,
+                    record_id: recId,
+                    message_id: msgId,
+                    chat_id: chatId,
+                    initData: tg.initData, // Защита!
+                    ...extraData
                 })
             });
         }
 
+        // Загрузка данных при старте
         function loadData() {
             sendToBpium('load_data')
             .then(res => res.json())
             .then(data => {
-                document.getElementById('history-box').innerHTML = data.history_html || "История комментариев пока пуста";
+                document.getElementById('history-box').innerHTML = data.history_html || "История пока пуста";
                 document.getElementById('status-box').innerHTML = data.status_html || "Статус не определен";
-                document.getElementById('details-box').innerHTML = data.details_html || "Данные объекта недоступны";
+                document.getElementById('details-box').innerHTML = data.details_html || "Данные не найдены";
             })
             .catch(() => {
                 document.getElementById('history-box').innerText = "Ошибка загрузки данных";
@@ -128,21 +139,36 @@
 
         loadData();
 
+        // ШАГ 1: Нажатие "СОХРАНИТЬ"
         function saveComment() {
             const text = document.getElementById('comment').value;
             if (!text.trim()) return;
+
+            savedCommentText = text; // Запоминаем текст
+
             sendToBpium('save_comment', { comment: text })
-            .then(() => {
+            .then(res => res.json())
+            .then(data => {
+                // МЫ ПОЛУЧИЛИ ID ИЗ BPIUM И ЗАПОМНИЛИ ЕГО!
+                savedCommentId = data.comment_id; 
+                
                 document.getElementById('my-comment-preview').innerText = text;
                 document.getElementById('step-input').classList.add('hidden');
                 document.getElementById('step-confirm').classList.remove('hidden');
             });
         }
 
+        // ШАГ 2: Нажатие "ДА / НЕТ"
         function confirmSend(isAgreed) {
             if (isAgreed) {
-                sendToBpium('confirm_send').then(() => tg.close());
-            } else { tg.close(); }
+                // Отправляем ID комментария, который нам выдал Bpium на первом шаге
+                sendToBpium('confirm_send', { 
+                    comment_id: savedCommentId, 
+                    comment: savedCommentText 
+                }).then(() => tg.close());
+            } else {
+                tg.close();
+            }
         }
     </script>
 </body>
