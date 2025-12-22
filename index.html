@@ -6,50 +6,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --pia-navy: #1d2a45;
-            --pia-gold: #e1a23e;
-            --bg-light: #f4f6f9;
-        }
-
+        :root { --pia-navy: #1d2a45; --pia-gold: #e1a23e; --bg-light: #f4f6f9; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; color: #333; -webkit-tap-highlight-color: transparent; }
-
         .pia-header { background: var(--pia-navy); padding: 18px 16px; color: white; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .pia-logo { display: flex; align-items: center; font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
         .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
         .logo-icon div { width: 5px; height: 5px; background: var(--pia-gold); }
-
         .container { padding: 16px; padding-bottom: 40px; }
         .section-header { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--pia-navy); margin-bottom: 8px; letter-spacing: 1px; opacity: 0.6; }
-
         textarea { width: 100%; height: 95px; border-radius: 12px; border: 1px solid #dcdfe6; padding: 14px; font-size: 16px; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; resize: none; outline: none; }
-        textarea:focus { border-color: var(--pia-gold); }
-
-        /* Кнопки */
         .btn { padding: 16px; border-radius: 12px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-gold { background: var(--pia-gold); color: white; box-shadow: 0 4px 15px rgba(225, 162, 62, 0.2); }
         .btn-grey { background: #e0e0e0; color: #757575; }
-        .btn:active { transform: scale(0.96); }
-
-        /* Группа кнопок в ряд */
         .btn-group { display: flex; gap: 10px; margin-top: 15px; }
         .btn-group .btn { flex: 1; }
-
-        .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 24px; font-size: 14px; line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        
-        /* Статусы */
+        .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 24px; font-size: 14px; line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
         .card-status { border-left: 5px solid var(--pia-navy); display: flex; justify-content: space-between; align-items: center; }
         .status-badge { padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; background: #eee; color: #666; }
-        
-        /* Цвета статусов */
-        .status-badge.st-new { background: #eef2f7; color: #5a6b7d; border-color: #d0d9e4; }
-        .status-badge.st-transfer { background: #fff8e1; color: #b78103; border-color: #ffecb3; }
-        .status-badge.st-work { background: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; }
-
+        .status-badge.st-new { background: #eef2f7 !important; color: #5a6b7d !important; border: 1px solid #d0d9e4 !important; }
+        .status-badge.st-transfer { background: #fff8e1 !important; color: #b78103 !important; border: 1px solid #ffecb3 !important; }
+        .status-badge.st-work { background: #e8f5e9 !important; color: #2e7d32 !important; border: 1px solid #c8e6c9 !important; }
         .card-details { border-left: 5px solid var(--pia-gold); }
         .loader { border: 2px solid #f3f3f3; border-top: 2px solid var(--pia-gold); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
         .hidden { display: none; }
         #my-comment-preview { border: 1px dashed #ddd; padding: 14px; border-radius: 12px; margin-bottom: 12px; background: #fafafa; font-style: italic; color: #555; }
     </style>
@@ -74,11 +53,9 @@
         <div id="step-confirm" class="hidden">
             <div class="section-header">Текст сохранен в базе</div>
             <div id="my-comment-preview"></div>
-            
             <div style="font-weight: 700; font-size: 11px; color: var(--pia-navy); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 20px;">
                 Отправить обратную связь застройщику
             </div>
-
             <div class="btn-group">
                 <button class="btn btn-grey" onclick="tg.close()">ОТМЕНА</button>
                 <button class="btn btn-gold" id="confirm-btn" onclick="confirmSend(true)">
@@ -89,10 +66,8 @@
 
         <div class="section-header" style="margin-top: 30px;" id="history-title">История переписки</div>
         <div id="history-box" class="card"><div class="loader"></div></div>
-
         <div class="section-header">Статус и Ответственный</div>
         <div id="status-box" class="card card-status"><div class="loader"></div></div>
-
         <div class="section-header">Детали заявки</div>
         <div id="details-box" class="card card-details"><div class="loader"></div></div>
     </div>
@@ -103,7 +78,11 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const recId = urlParams.get('rec_id');
-        const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
+        const chatId = urlParams.get('chat_id');
+        const msgId = urlParams.get('msg_id');
+        
+        // ВЫТАСКИВАЕМ СЕКРЕТ ИЗ URL (из ссылки кнопки в Бипиуме)
+        const secretFromUrl = urlParams.get('secret') || ""; 
 
         window.commentIdFromBpium = ""; 
         let savedText = "";
@@ -113,13 +92,18 @@
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    action: action, record_id: recId,
-                    secret: "PiaTrade2025",
+                    action: action, 
+                    record_id: recId,
+                    chat_id: chatId,
+                    message_id: msgId,
+                    secret: secretFromUrl, // <--- ОТПРАВЛЯЕМ СЕКРЕТ ОБРАТНО
                     user: tg.initDataUnsafe.user || { id: "unknown" },
                     ...extraData
                 })
             });
         }
+
+        const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
 
         function loadData() {
             sendToBpium('load_data')
@@ -127,18 +111,15 @@
             .then(data => {
                 document.getElementById('history-box').innerHTML = data.history_html || "История пуста";
                 if (data.history_count !== undefined) document.getElementById('history-title').innerText = `История (${data.history_count})`;
-                
-                // Статус и покраска
                 const statusBox = document.getElementById('status-box');
                 statusBox.innerHTML = data.status_html || "Не определен";
                 const badge = statusBox.querySelector('.status-badge');
                 if (badge) {
-                    const t = badge.innerText.toLowerCase();
-                    if (t.includes("новая")) badge.classList.add('st-new');
-                    if (t.includes("передана")) badge.classList.add('st-transfer');
-                    if (t.includes("работе")) badge.classList.add('st-work');
+                    const txt = badge.innerText.toLowerCase();
+                    if (txt.includes("новая")) badge.className = 'status-badge st-new';
+                    if (txt.includes("передана")) badge.className = 'status-badge st-transfer';
+                    if (txt.includes("работе")) badge.className = 'status-badge st-work';
                 }
-
                 document.getElementById('details-box').innerHTML = data.details_html || "Нет данных";
             });
         }
@@ -151,7 +132,6 @@
             const btn = document.getElementById('save-btn');
             btn.innerHTML = '<div class="loader" style="border-top-color:white;"></div>';
             btn.disabled = true;
-
             try {
                 const response = await sendToBpium('save_comment', { comment: text });
                 const result = await response.json();
