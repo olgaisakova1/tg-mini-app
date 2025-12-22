@@ -7,85 +7,43 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --pia-navy: #1d2a45;  /* Темно-синий CRM */
-            --pia-gold: #e1a23e;  /* Золото CRM */
+            --pia-navy: #1d2a45;
+            --pia-gold: #e1a23e;
             --bg-light: #f4f6f9;
-            --text-main: #2c3e50;
-            --text-hint: #7f8c8d;
         }
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-main);
-            margin: 0; padding: 0;
-            display: flex; flex-direction: column;
-            min-height: 100vh;
-        }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; }
 
-        .pia-header {
-            background-color: var(--pia-navy);
-            padding: 20px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
+        .pia-header { background: var(--pia-navy); padding: 20px 16px; color: white; display: flex; align-items: center; justify-content: space-between; }
+        .pia-logo { display: flex; align-items: center; font-weight: 700; font-size: 18px; }
+        .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
+        .logo-icon div { width: 6px; height: 6px; background: var(--pia-gold); }
 
-        .pia-logo {
-            display: flex;
-            align-items: center;
-            font-weight: 700;
-            font-size: 18px;
-            letter-spacing: 0.5px;
-        }
+        .container { padding: 20px 16px; }
+        .section-header { font-size: 12px; text-transform: uppercase; font-weight: 700; color: var(--pia-navy); margin-bottom: 8px; letter-spacing: 1px; }
 
-        .logo-icon {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2px;
-            margin-right: 10px;
-        }
-        .logo-icon div {
-            width: 6px; height: 6px; background-color: var(--pia-gold);
-        }
+        textarea { width: 100%; height: 100px; border-radius: 8px; border: 1px solid #dcdfe6; padding: 14px; font-size: 16px; margin-bottom: 16px; box-sizing: border-box; font-family: inherit; }
 
-        .container { padding: 20px 16px; flex-grow: 1; }
-
-        .section-header { 
-            font-size: 13px; text-transform: uppercase; font-weight: 700; 
-            color: var(--pia-navy); margin-bottom: 12px; letter-spacing: 1px; 
-        }
-        
-        textarea {
-            width: 100%; height: 110px; border-radius: 8px; border: 1px solid #dcdfe6;
-            padding: 14px; font-size: 16px; background: #ffffff; color: var(--text-main);
-            box-sizing: border-box; outline: none; margin-bottom: 16px;
-            font-family: inherit; line-height: 1.5;
-        }
-
-        .btn {
-            width: 100%; padding: 18px; border-radius: 8px; border: none;
-            font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .btn-gold { 
-            background-color: var(--pia-gold); color: #ffffff; 
-            box-shadow: 0 4px 14px rgba(225, 162, 62, 0.3);
-        }
-        .btn-gold:active { transform: scale(0.98); }
-        
+        .btn { width: 100%; padding: 18px; border-radius: 8px; border: none; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+        .btn-gold { background: var(--pia-gold); color: white; box-shadow: 0 4px 14px rgba(225, 162, 62, 0.3); }
         .btn-outline { background: none; border: 2px solid var(--pia-navy); color: var(--pia-navy); margin-top: 12px; }
 
-        .card { 
-            background: #ffffff; border-radius: 12px; padding: 16px; 
-            margin-bottom: 24px; font-size: 14px; line-height: 1.6;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-            border-left: 4px solid var(--pia-gold);
+        .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 20px; font-size: 14px; line-height: 1.6; border-left: 4px solid var(--pia-gold); position: relative; min-height: 50px; }
+
+        /* СПИННЕР ЗАГРУЗКИ */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--pia-gold);
+            border-radius: 50%;
+            width: 20px; height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
         }
 
-        b { font-weight: 600; color: var(--pia-navy); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .hidden { display: none; }
         #my-comment-preview { border: 1px dashed var(--pia-gold); padding: 12px; border-radius: 8px; margin-bottom: 16px; }
     </style>
@@ -97,79 +55,72 @@
             <div class="logo-icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
             PiaWork
         </div>
-        <div style="font-size: 12px; opacity: 0.8;">Telegram Helper</div>
+        <div style="font-size: 11px; opacity: 0.7;">v. 2.0</div>
     </div>
 
     <div class="container">
         <div id="step-input">
-            <div class="section-header">Добавить комментарий</div>
-            <textarea id="comment" placeholder="Введите ваш текст..."></textarea>
+            <div class="section-header">Ваш комментарий</div>
+            <textarea id="comment" placeholder="Напишите детали..."></textarea>
             <button class="btn btn-gold" onclick="saveComment()">СОХРАНИТЬ</button>
         </div>
 
         <div id="step-confirm" class="hidden">
-            <div class="section-header">Ваш комментарий</div>
+            <div class="section-header">Комментарий записан</div>
             <div id="my-comment-preview"></div>
-            <div style="text-align: center; margin-bottom: 20px; font-weight: 500;">
-                Отправить обратную связь менеджеру застройщика?
-            </div>
             <button class="btn btn-gold" onclick="confirmSend(true)">ДА, ОТПРАВИТЬ</button>
             <button class="btn btn-outline" onclick="confirmSend(false)">НЕТ, ЗАКРЫТЬ</button>
         </div>
 
         <div class="section-header" style="margin-top: 30px;">История переписки</div>
-        <div id="history-box" class="card">Загрузка истории...</div>
+        <div id="history-box" class="card">
+            <div class="loader"></div> Загрузка истории...
+        </div>
 
-        <div class="section-header">Детали заявки</div>
-        <div id="details-box" class="card">Загрузка данных...</div>
+        <div class="section-header">Детали объекта</div>
+        <div id="details-box" class="card">
+            <div class="loader"></div> Загрузка параметров...
+        </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Считываем все ID из ссылки
         const urlParams = new URLSearchParams(window.location.search);
         const recId = urlParams.get('rec_id');
         const msgId = urlParams.get('msg_id');
-        const chatId = urlParams.get('chat_id'); // <--- Считываем Chat ID
-        
+        const chatId = urlParams.get('chat_id');
         const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
 
-        // Универсальная функция для связи с Bpium
         function sendToBpium(action, extraData = {}) {
             return fetch(webhookUrl, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    action: action,
-                    record_id: recId,
-                    message_id: msgId,
-                    chat_id: chatId,
-                    user: tg.initDataUnsafe.user, // <--- Данные пользователя (ID, Имя и т.д.)
-                    ...extraData
+                    action: action, record_id: recId, message_id: msgId, chat_id: chatId,
+                    user: tg.initDataUnsafe.user, ...extraData
                 })
             });
         }
 
-        // 1. Первичная загрузка
         function loadData() {
             sendToBpium('load_data')
             .then(res => res.json())
             .then(data => {
-                document.getElementById('history-box').innerHTML = data.history_html || "Комментариев пока нет";
+                document.getElementById('history-box').innerHTML = data.history_html || "Истории пока нет";
                 document.getElementById('details-box').innerHTML = data.details_html || "Данные не загружены";
             })
-            .catch(err => { document.getElementById('history-box').innerText = "Ошибка связи с сервером"; });
+            .catch(() => {
+                document.getElementById('history-box').innerText = "Ошибка загрузки";
+            });
         }
 
         loadData();
 
-        // 2. Сохранение комментария
         function saveComment() {
             const text = document.getElementById('comment').value;
             if (!text.trim()) return;
-
             sendToBpium('save_comment', { comment: text })
             .then(() => {
                 document.getElementById('my-comment-preview').innerText = text;
@@ -178,13 +129,10 @@
             });
         }
 
-        // 3. Подтверждение отправки
         function confirmSend(isAgreed) {
             if (isAgreed) {
                 sendToBpium('confirm_send').then(() => tg.close());
-            } else {
-                tg.close();
-            }
+            } else { tg.close(); }
         }
     </script>
 </body>
