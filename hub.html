@@ -9,7 +9,7 @@
         :root { --pia-navy: #1d2a45; --pia-gold: #e1a23e; --bg-light: #f4f6f9; --red-notify: #ff3b30; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; color: #333; -webkit-tap-highlight-color: transparent; }
         
-        /* ПРЕМИАЛЬНАЯ ШАПКА */
+        /* ШАПКА */
         .pia-header { background: var(--pia-navy); padding: 18px 16px; color: white; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .pia-logo { display: flex; align-items: center; font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
         .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
@@ -29,9 +29,10 @@
         /* КАРТОЧКИ СОФИИ */
         .sophia-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
         .client-name { font-weight: 700; font-size: 13px; color: var(--pia-navy); }
+        .client-name span { color: var(--pia-gold); font-size: 11px; margin-left: 4px; }
         .notify-badge { background: var(--red-notify); color: white; font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 20px; }
 
-        /* СЕТКА ГРУПП - БЕЗ ДОМИКОВ, ТОЛЬКО ТЕКСТ И ПОЛОСКА */
+        /* СЕТКА ГРУПП */
         .groups-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .group-card { 
             background: white; 
@@ -46,7 +47,6 @@
             overflow: hidden;
             height: 44px; 
         }
-        /* Золотая вертикальная полоска слева */
         .group-card::before { 
             content: ''; 
             position: absolute; 
@@ -91,12 +91,21 @@
         </div>
 
         <div class="section-header">Диалоги Софии (AI)</div>
+        
         <div class="sophia-card">
             <div style="flex:1">
                 <div class="client-name">Дмитрий <span>(RBI)</span></div>
                 <div style="font-size: 10px; color: #777;">Квалификация...</div>
             </div>
             <div class="notify-badge">🔴 +3</div>
+        </div>
+
+        <div class="sophia-card">
+            <div style="flex:1">
+                <div class="client-name">Анна <span>(ЛСР)</span></div>
+                <div style="font-size: 10px; color: #777;">Ожидание фото</div>
+            </div>
+            <div style="color: #ccc; font-size: 18px;">›</div>
         </div>
 
         <div class="section-header">ГРУППЫ TELEGRAM</div>
