@@ -9,7 +9,7 @@
         :root { --pia-navy: #1d2a45; --pia-gold: #e1a23e; --bg-light: #f4f6f9; --red-notify: #ff3b30; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; color: #333; -webkit-tap-highlight-color: transparent; }
         
-        /* ШАПКА В ТВОЕМ СТИЛЕ */
+        /* ШАПКА */
         .pia-header { background: var(--pia-navy); padding: 18px 16px; color: white; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .pia-logo { display: flex; align-items: center; font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
         .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
@@ -21,14 +21,13 @@
         .container { padding: 16px; padding-bottom: 40px; }
         .section-header { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--pia-navy); margin-bottom: 12px; letter-spacing: 1px; opacity: 0.6; margin-top: 24px; }
 
-        /* ГЛАВНАЯ КНОПКА */
+        /* КНОПКА НОВАЯ ЗАЯВКА */
         .hero-box { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; margin-bottom: 24px; border: 1px solid rgba(0,0,0,0.02); }
         .btn-hero { width: 100%; padding: 18px; border-radius: 12px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; background: var(--pia-gold); color: white; box-shadow: 0 6px 20px rgba(225, 162, 62, 0.3); display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-hero:active { transform: scale(0.98); opacity: 0.9; }
         .hero-subtitle { font-size: 10px; color: #888; margin-top: 10px; font-weight: 500; }
 
-        /* КАРТОЧКИ СОФИИ */
-        .sophia-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); transition: 0.2s; -webkit-user-select: none; }
+        /* КАРТОЧКИ ДИАЛОГОВ */
+        .sophia-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); transition: 0.2s; }
         .sophia-card:active { background: #f9f9f9; transform: translateX(5px); }
         .card-main { flex: 1; }
         .client-name { font-weight: 700; font-size: 14px; color: var(--pia-navy); margin-bottom: 4px; }
@@ -38,10 +37,6 @@
         .card-meta { text-align: right; display: flex; align-items: center; gap: 12px; }
         .notify-badge { background: var(--red-notify); color: white; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 20px; min-width: 14px; text-align: center; box-shadow: 0 2px 8px rgba(255, 59, 48, 0.3); }
         .arrow-icon { color: #ccc; font-size: 18px; font-weight: 300; }
-
-        .loader { border: 2px solid #f3f3f3; border-top: 2px solid var(--pia-gold); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -52,7 +47,7 @@
             PiaLink
         </div>
         <div class="user-info">
-            <div class="user-name" id="user-name">Загрузка...</div>
+            <div class="user-name">ОЛЬГА ИСАКОВА</div>
             <div class="user-role">МЕНЕДЖЕР ТРЕЙД-ИН</div>
         </div>
     </div>
@@ -66,8 +61,28 @@
         </div>
 
         <div class="section-header">Диалоги Софии (AI)</div>
+        
         <div id="sophia-list">
-            <div style="text-align: center; padding: 20px;"><div class="loader"></div></div>
+            <div class="sophia-card" onclick="alert('Переход к диалогу Дмитрия...')">
+                <div class="card-main">
+                    <div class="client-name">Дмитрий <span>(RBI)</span></div>
+                    <div class="client-status">Статус: Квалификация</div>
+                </div>
+                <div class="card-meta">
+                    <div class="notify-badge">🔴 +3</div>
+                    <div class="arrow-icon">›</div>
+                </div>
+            </div>
+
+            <div class="sophia-card" onclick="alert('Переход к диалогу Анны...')">
+                <div class="card-main">
+                    <div class="client-name">Анна <span>(ЛСР)</span></div>
+                    <div class="client-status">Статус: Ожидание фото</div>
+                </div>
+                <div class="card-meta">
+                    <div class="arrow-icon">›</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -75,81 +90,9 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
         
-        const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
-
-        // 1. ЗАГРУЗКА ДАННЫХ ДЛЯ ХАБА
-        function loadHubData() {
-            fetch(webhookUrl, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    action: 'load_hub',
-                    user: tg.initDataUnsafe.user || { id: "unknown", first_name: "Менеджер" }
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('user-name').innerText = data.user_full_name || "ПОЛЬЗОВАТЕЛЬ";
-                renderSophiaList(data.dialogs);
-            });
+        function createNewApp() {
+            alert("Здесь будет запрос в Bpium за ссылкой и переход в браузер!");
         }
-
-        // 2. ОТРИСОВКА КАРТОЧЕК СОФИИ
-        function renderSophiaList(dialogs) {
-            const list = document.getElementById('sophia-list');
-            if (!dialogs || dialogs.length === 0) {
-                list.innerHTML = '<div style="font-size: 12px; color: #999; text-align: center; margin-top: 20px;">Активных диалогов пока нет</div>';
-                return;
-            }
-
-            list.innerHTML = dialogs.map(d => `
-                <div class="sophia-card" onclick="openSophiaDialog('${d.dialog_url}')">
-                    <div class="card-main">
-                        <div class="client-name">${d.name} <span>(${d.developer})</span></div>
-                        <div class="client-status">Статус: ${d.status}</div>
-                    </div>
-                    <div class="card-meta">
-                        ${d.unread_count > 0 ? `<div class="notify-badge">🔴 +${d.unread_count}</div>` : ''}
-                        <div class="arrow-icon">›</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // 3. ХИТРУШКА: СОЗДАНИЕ ЗАЯВКИ И ПЕРЕХОД
-        async function createNewApp() {
-            const btn = document.getElementById('new-app-btn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<div class="loader" style="border-top-color:white;"></div>';
-            btn.disabled = true;
-
-            try {
-                const res = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        action: 'get_new_form_url',
-                        user: tg.initDataUnsafe.user || { id: "unknown" }
-                    })
-                });
-                const data = await res.json();
-                
-                if (data.url) {
-                    tg.openLink(data.url, {try_browser: true});
-                }
-            } catch (e) {
-                console.error("Ошибка при получении ссылки");
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        function openSophiaDialog(url) {
-            if (url) tg.openLink(url);
-        }
-
-        loadHubData();
     </script>
 </body>
 </html>
