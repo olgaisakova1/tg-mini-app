@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { --pia-navy: #1d2a45; --pia-gold: #e1a23e; --bg-light: #f4f6f9; --red-notify: #ff3b30; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; color: #333; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; color: #333; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         
         /* ШАПКА */
         .pia-header { background: var(--pia-navy); padding: 18px 16px; color: white; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -18,8 +18,8 @@
         .user-name { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
         .user-role { font-size: 9px; opacity: 0.7; letter-spacing: 0.5px; }
 
-        .container { padding: 16px; padding-bottom: 40px; }
-        .section-header { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--pia-navy); margin-bottom: 12px; letter-spacing: 1px; opacity: 0.6; margin-top: 24px; }
+        .container { padding: 16px; padding-bottom: 60px; }
+        .section-header { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--pia-navy); margin-bottom: 12px; letter-spacing: 1px; opacity: 0.6; margin-top: 24px; display: flex; justify-content: space-between; }
 
         /* КНОПКА НОВАЯ ЗАЯВКА */
         .hero-box { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; margin-bottom: 24px; border: 1px solid rgba(0,0,0,0.02); }
@@ -28,15 +28,19 @@
 
         /* КАРТОЧКИ ДИАЛОГОВ */
         .sophia-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); transition: 0.2s; }
-        .sophia-card:active { background: #f9f9f9; transform: translateX(5px); }
+        .sophia-card:active { background: #f9f9f9; transform: scale(0.98); }
         .card-main { flex: 1; }
-        .client-name { font-weight: 700; font-size: 14px; color: var(--pia-navy); margin-bottom: 4px; }
-        .client-name span { color: var(--pia-gold); font-size: 12px; margin-left: 4px; }
-        .client-status { font-size: 11px; color: #777; font-weight: 500; }
-        
-        .card-meta { text-align: right; display: flex; align-items: center; gap: 12px; }
-        .notify-badge { background: var(--red-notify); color: white; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 20px; min-width: 14px; text-align: center; box-shadow: 0 2px 8px rgba(255, 59, 48, 0.3); }
-        .arrow-icon { color: #ccc; font-size: 18px; font-weight: 300; }
+        .client-name { font-weight: 700; font-size: 13px; color: var(--pia-navy); margin-bottom: 4px; }
+        .client-name span { color: var(--pia-gold); font-size: 11px; margin-left: 4px; }
+        .client-status { font-size: 10px; color: #777; font-weight: 500; }
+        .notify-badge { background: var(--red-notify); color: white; font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 20px; box-shadow: 0 2px 6px rgba(255, 59, 48, 0.3); }
+
+        /* СЕТКА ГРУПП */
+        .groups-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .group-btn { background: white; border-radius: 12px; padding: 12px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 8px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 8px; transition: 0.2s; text-decoration: none; color: inherit; }
+        .group-btn:active { background: #f0f0f0; transform: scale(0.95); }
+        .group-icon { width: 28px; height: 28px; background: #eef2f7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--pia-navy); flex-shrink: 0; }
+        .group-name { font-size: 11px; font-weight: 600; color: var(--pia-navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     </style>
 </head>
 <body>
@@ -54,45 +58,44 @@
 
     <div class="container">
         <div class="hero-box">
-            <button class="btn-hero" id="new-app-btn" onclick="createNewApp()">
-                ⚡️ НОВАЯ ЗАЯВКА
-            </button>
-            <div class="hero-subtitle">Открыть форму заполнения данных в браузере</div>
+            <button class="btn-hero" onclick="createNewApp()">⚡️ НОВАЯ ЗАЯВКА</button>
+            <div class="hero-subtitle">Создать запись в Bpium и открыть форму</div>
         </div>
 
-        <div class="section-header">Диалоги Софии (AI)</div>
-        
-        <div id="sophia-list">
-            <div class="sophia-card" onclick="alert('Переход к диалогу Дмитрия...')">
-                <div class="card-main">
-                    <div class="client-name">Дмитрий <span>(RBI)</span></div>
-                    <div class="client-status">Статус: Квалификация</div>
-                </div>
-                <div class="card-meta">
-                    <div class="notify-badge">🔴 +3</div>
-                    <div class="arrow-icon">›</div>
-                </div>
+        <div class="section-header">Диалоги Софии (AI) <span>2 активных</span></div>
+        <div class="sophia-card" onclick="alert('Переход к диалогу...')">
+            <div class="card-main">
+                <div class="client-name">Дмитрий <span>(RBI)</span></div>
+                <div class="client-status">Квалификация...</div>
             </div>
-
-            <div class="sophia-card" onclick="alert('Переход к диалогу Анны...')">
-                <div class="card-main">
-                    <div class="client-name">Анна <span>(ЛСР)</span></div>
-                    <div class="client-status">Статус: Ожидание фото</div>
-                </div>
-                <div class="card-meta">
-                    <div class="arrow-icon">›</div>
-                </div>
+            <div class="notify-badge">🔴 +3</div>
+        </div>
+        <div class="sophia-card" onclick="alert('Переход к диалогу...')">
+            <div class="card-main">
+                <div class="client-name">Анна <span>(ЛСР)</span></div>
+                <div class="client-status">Ожидание фото</div>
             </div>
         </div>
+
+        <div class="section-header">ЧАТЫ ЗАСТРОЙЩИКОВ</div>
+        <div class="groups-grid">
+            <a href="#" class="group-btn"><div class="group-icon">🏢</div><div class="group-name">RBI Групп</div></a>
+            <a href="#" class="group-btn"><div class="group-icon">🏢</div><div class="group-name">ЛСР Недвиж.</div></a>
+            <a href="#" class="group-btn"><div class="group-icon">🏢</div><div class="group-name">Setl City</div></a>
+            <a href="#" class="group-btn"><div class="group-icon">🏢</div><div class="group-name">Эталон</div></a>
+            <a href="#" class="group-btn"><div class="group-icon">🏢</div><div class="group-name">Самолет</div></a>
+            <a href="#" class="group-btn"><div class="group-icon">🏢</div><div class="group-name">ПИК</div></a>
+            <a href="#" class="group-btn"><div class="group-icon">🏢</div><div class="group-name">Glorax</div></a>
+            <a href="#" class="group-btn"><div class="group-icon">🏢</div><div class="group-name">ЦДС</div></a>
+            <a href="#" class="group-btn"><div class="group-icon">🏢</div><div class="group-name">Аквилон</div></a>
+            <a href="#" class="group-btn"><div class="group-icon">🏢</div><div class="group-name">Лидер</div></a>
+            </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        
-        function createNewApp() {
-            alert("Здесь будет запрос в Bpium за ссылкой и переход в браузер!");
-        }
+        function createNewApp() { alert("Запрос ссылки в Bpium..."); }
     </script>
 </body>
 </html>
