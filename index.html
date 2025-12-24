@@ -76,16 +76,31 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const recId = urlParams.get('rec_id');
-        const chatId = urlParams.get('chat_id');
-        const msgId = urlParams.get('msg_id');
-        
-        // ВЫТАСКИВАЕМ СЕКРЕТ ИЗ URL (из ссылки кнопки в Бипиуме)
-        const secretFromUrl = urlParams.get('secret') || ""; 
+        // --- БЛОК ОБРАБОТКИ ПАРАМЕТРОВ ---
+        const startParam = tg.initDataUnsafe.start_param; 
+        let recId, chatId, msgId, secretFromUrl;
+
+        if (startParam) {
+            // Если зашли через Директ-ссылку в группе (склейка через _)
+            const parts = startParam.split('_');
+            recId = parts[0];
+            chatId = "-" + parts[1]; // Сами приклеиваем минус для группы
+            msgId = parts[2];
+            secretFromUrl = parts[3] || "";
+            console.log("Данные из startapp:", {recId, chatId, msgId, secretFromUrl});
+        } else {
+            // Если зашли через обычный URL (для тестов или старых ссылок)
+            const urlParams = new URLSearchParams(window.location.search);
+            recId = urlParams.get('rec_id');
+            chatId = urlParams.get('chat_id');
+            msgId = urlParams.get('msg_id');
+            secretFromUrl = urlParams.get('secret') || "";
+            console.log("Данные из URL:", {recId, chatId, msgId, secretFromUrl});
+        }
 
         window.commentIdFromBpium = ""; 
         let savedText = "";
+        const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
 
         function sendToBpium(action, extraData = {}) {
             return fetch(webhookUrl, {
@@ -96,14 +111,12 @@
                     record_id: recId,
                     chat_id: chatId,
                     message_id: msgId,
-                    secret: secretFromUrl, // <--- ОТПРАВЛЯЕМ СЕКРЕТ ОБРАТНО
+                    secret: secretFromUrl,
                     user: tg.initDataUnsafe.user || { id: "unknown" },
                     ...extraData
                 })
             });
         }
-
-        const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
 
         function loadData() {
             sendToBpium('load_data')
