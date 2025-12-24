@@ -8,106 +8,122 @@
         :root { --pia-navy: #1d2a45; --pia-gold: #e1a23e; --bg-light: #f4f6f9; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; color: #333; }
         
-        [cite_start]/* Стили шапки [cite: 4-12, 33] */
+        .app-wrapper { max-width: 1000px; margin: 0 auto; background: white; min-height: 100vh; position: relative; box-shadow: 0 0 40px rgba(0,0,0,0.05); }
+
+        /* ЭКРАН ВХОДА [cite: 4-6] */
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--pia-navy); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: 0.5s; }
+        .btn-login { background: #0088cc; color: white; border: none; padding: 18px 36px; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+
+        /* ШАПКА [cite: 4-12] */
         .pia-header { background: var(--pia-navy); padding: 18px 16px; color: white; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-        .pia-logo { display: flex; align-items: center; font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
+        .pia-logo { display: flex; align-items: center; font-weight: 800; font-size: 18px; }
         .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
         .logo-icon div { width: 5px; height: 5px; background: var(--pia-gold); }
-        .user-name { font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .user-name { font-size: 10px; font-weight: 700; text-transform: uppercase; text-align: right; }
 
-        /* Экран авторизации */
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--pia-navy); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: 0.5s; }
-        
-        [cite_start]/* Контейнер [cite: 13] */
-        .container { padding: 16px; max-width: 600px; margin: 0 auto; }
-        .app-card { background: white; border-radius: 14px; padding: 16px; margin-bottom: 12px; border-left: 5px solid var(--pia-gold); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .container { padding: 20px 16px 100px 16px; }
+        .btn-hero { width: 100%; padding: 20px; border-radius: 14px; border: none; font-size: 14px; font-weight: 700; background: var(--pia-gold); color: white; text-transform: uppercase; margin-bottom: 24px; box-shadow: 0 6px 20px rgba(225,162,62,0.3); cursor: pointer; }
+
+        /* СЕТКА ЗАЯВОК [cite: 26] */
+        .apps-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        @media (min-width: 768px) { .apps-grid { grid-template-columns: 1fr 1fr; } }
+
+        /* КАРТОЧКИ [cite: 21-25] */
+        .app-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 12px rgba(0,0,0,0.02); display: flex; flex-direction: column; }
+        .status-line { font-weight: 700; font-size: 14px; color: var(--pia-navy); margin-bottom: 12px; }
+        .feedback-box { background: #fff9f0; border-left: 4px solid var(--pia-gold); padding: 12px; border-radius: 4px 12px 12px 4px; margin: 12px 0; font-size: 12px; font-style: italic; color: #555; }
+        .card-btn { margin-top: auto; padding: 12px; border-radius: 10px; border: 1px solid #eee; background: #f8fafc; color: var(--pia-navy); font-size: 11px; font-weight: 700; text-align: center; text-transform: uppercase; }
+
+        .bottom-nav { position: absolute; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px 0 30px; border-top: 1px solid #eee; }
+        .nav-item { text-align: center; color: #aaa; text-decoration: none; font-size: 9px; font-weight: 700; }
+        .nav-item.active { color: var(--pia-navy); }
 
         .hidden { display: none !important; }
-        #auth-status { margin-top: 20px; font-size: 12px; color: var(--pia-gold); text-align: center; }
     </style>
 </head>
 <body>
 
-    <div id="auth-overlay">
-        <h1 style="margin-bottom: 5px;">PiaLink</h1>
-        <p style="opacity: 0.6; font-size: 11px; letter-spacing: 2px; margin-bottom: 30px;">АВТОРИЗАЦИЯ RBI</p>
-        
-        <div id="telegram-login-container">
-            <script async src="https://telegram.org/js/telegram-widget.js?22" 
-                data-telegram-login="PiaLink_bot" 
-                data-size="large" 
-                data-radius="10" 
-                data-onauth="onTelegramAuth(user)" 
-                data-request-access="write"></script>
+    <div class="app-wrapper">
+        <div id="auth-overlay">
+            <div style="font-weight: 800; font-size: 32px; margin-bottom: 10px;">PiaLink</div>
+            <div style="font-size: 10px; opacity: 0.5; letter-spacing: 3px; margin-bottom: 40px;">SECURE LOGIN</div>
+            <button class="btn-login" onclick="fakeLogin()">ВОЙТИ ЧЕРЕЗ TELEGRAM</button>
         </div>
 
-        <div id="auth-status"></div>
-    </div>
-
-    <div id="app-content" class="hidden">
-        <div class="pia-header">
-            <div class="pia-logo">
-                <div class="logo-icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                PiaLink
+        <div id="main-app" class="hidden">
+            <div class="pia-header">
+                <div class="pia-logo">
+                    <div class="logo-icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                    PiaLink
+                </div>
+                <div class="user-info">
+                    <div class="user-name">ОЛЬГА ИСАКОВА</div>
+                    <div style="font-size: 9px; opacity: 0.7;">Менеджер RBI</div>
+                </div>
             </div>
-            <div class="user-info">
-                <div class="user-name" id="display-name">ОЛЬГА ИСАКОВА</div>
-                <div style="font-size: 9px; opacity: 0.7; text-align: right;">МЕНЕДЖЕР RBI</div>
-            </div>
-        </div>
 
-        <div class="container">
-            <div id="cards-container">
-                <div class="app-card">
-                    <div style="font-weight:700; font-size:14px;">Заявка №46</div>
-                    <div style="font-size:11px; color:#777;">ул. Марата, 15</div>
-                    <div style="margin-top: 10px; font-style: italic; font-size: 11px; border-left: 2px solid var(--pia-gold); padding-left: 10px;">
-                        "Созвонились, ждем фото объекта"
+            <div class="container">
+                <button class="btn-hero" onclick="alert('Запрос отправлен для ID: ' + MY_TG_ID)">⚡️ НОВАЯ ЗАЯВКА</button>
+                
+                <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; opacity: 0.5; margin-bottom: 15px; letter-spacing: 1px;">Мои заявки</div>
+
+                <div class="apps-grid">
+                    <div class="app-card">
+                        <div class="status-line">Статус: В работе ⚙️</div>
+                        <div style="font-size: 13px;">• Клиент: <b>Василий</b> (79123456754)</div>
+                        <div class="feedback-box">
+                            <b>ОБРАТНАЯ СВЯЗЬ:</b><br>"Созвонились, ждем фото объекта для оценки"
+                        </div>
+                        <div class="card-btn">Чат с менеджером</div>
+                    </div>
+
+                    <div class="app-card">
+                        <div class="status-line">Статус: Отправлена 🤝</div>
+                        <div style="font-size: 13px;">• Клиент: <b>Анна</b> (79218885522)</div>
+                        <p style="font-size: 12px; color: #777; margin: 15px 0;">Заявка принята и ожидает распределения на куратора.</p>
+                        <div class="card-btn">Написать куратору</div>
                     </div>
                 </div>
             </div>
+
+            <nav class="bottom-nav">
+                <a href="#" class="nav-item">👤 ПРОФИЛЬ</a>
+                <a href="#" class="nav-item active">📋 ЗАЯВКИ</a>
+                <a href="#" class="nav-item">📞 КУРАТОР</a>
+            </nav>
         </div>
     </div>
 
     <script>
-        // АДРЕС ТВОЕГО ВЕБХУКА В БИПИУМЕ
-        const BPIUM_WEBHOOK_URL = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app_2';
+        // ТВОЙ ЖЕСТКО ЗАШИТЫЙ ID И ССЫЛКА НА БИПИУМ
+const MY_TG_ID = "1380111083";
+const BPIUM_URL = "https://alciona.bpium.ru/api/webrequest/tg_mini_app_2";
 
-        // ЭТА ФУНКЦИЯ СРАБОТАЕТ, КОГДА ТЫ НАЖМЕШЬ "ПРИНЯТЬ" В ТЕЛЕГРАМЕ
-        function onTelegramAuth(user) {
-            console.log('Данные от ТГ получены:', user);
-            document.getElementById('auth-status').innerText = 'Связь с базой данных...';
+function fakeLogin() {
+    const btn = document.querySelector('.btn-login');
+    btn.innerText = 'СВЯЗЬ С БАЗОЙ...';
+    
+    // ОТПРАВКА ДАННЫХ В БИПИУМ
+    fetch(BPIUM_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Чтобы браузер не блокировал отправку на презентации
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            tg_id: MY_TG_ID,
+            action: "login_check",
+            user_name: "ОЛЬГА ИСАКОВА" 
+        })
+    });
 
-            // 1. Отправляем данные в Бипиум
-            fetch(BPIUM_WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ auth_data: user })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Если Бипиум ответил "ОК" (мы это имитируем для теста)
-                if (data.status === 'ok' || true) { // Удали "|| true", когда настроишь сценарий
-                    showApp(user);
-                } else {
-                    document.getElementById('auth-status').innerText = 'Ошибка: ' + data.message;
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка:', error);
-                // На время теста всё равно пускаем внутрь
-                showApp(user); 
-            });
-        }
-
-        function showApp(user) {
-            document.getElementById('display-name').innerText = user.first_name + ' ' + (user.last_name || '');
-            document.getElementById('auth-overlay').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('auth-overlay').classList.add('hidden');
-                document.getElementById('app-content').classList.remove('hidden');
-            }, 500);
-        }
+    // Визуальный переход (чтобы не ждать ответа от сервера на презентации)
+    setTimeout(() => {
+        document.getElementById('auth-overlay').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('auth-overlay').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+        }, 500);
+    }, 1200);
+}
     </script>
 </body>
 </html>
