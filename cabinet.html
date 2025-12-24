@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --pia-navy: #1d2a45; 
+            --pia-gold: #e1a23e; 
+            --bg-light: #f4f6f9; 
+            --orange-tg: #f59e0b;
+        }
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background: var(--bg-light); 
+            margin: 0; padding: 0; color: #333; 
+            overflow-x: hidden;
+        }
+
+        /* ЭКРАН АВТОРИЗАЦИИ (ШИРМА) */
+        #auth-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--pia-navy); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 1000;
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .auth-logo { margin-bottom: 40px; text-align: center; color: white; }
+        .login-btn {
+            background: #0088cc; color: white; border: none; padding: 16px 32px;
+            border-radius: 14px; font-weight: 700; font-size: 14px; cursor: pointer;
+            display: flex; align-items: center; gap: 12px; letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .loader {
+            width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white; border-radius: 50%;
+            animation: spin 1s linear infinite; display: none;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ШАПКА */
+        .pia-header { 
+            background: var(--pia-navy); padding: 18px 16px; color: white; 
+            display: flex; align-items: center; justify-content: space-between; 
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .pia-logo { display: flex; align-items: center; font-weight: 800; font-size: 18px; letter-spacing: 0.5px; }
+        .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
+        .logo-icon div { width: 5px; height: 5px; background: var(--pia-gold); }
+        .user-info { text-align: right; }
+        .user-name { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .user-role { font-size: 9px; opacity: 0.7; letter-spacing: 0.5px; }
+
+        .container { padding: 16px; padding-bottom: 100px; }
+        .btn-hero { 
+            width: 100%; padding: 18px; border-radius: 14px; border: none; font-size: 14px;
+            font-weight: 700; background: var(--pia-gold); color: white;
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px;
+            box-shadow: 0 6px 20px rgba(225, 162, 62, 0.3);
+        }
+
+        .section-header { 
+            font-size: 11px; text-transform: uppercase; font-weight: 700; 
+            color: var(--pia-navy); margin: 24px 0 12px 4px; letter-spacing: 1.5px; opacity: 0.6; 
+        }
+
+        /* КАРТОЧКА ЗАЯВКИ В СТИЛЕ СООБЩЕНИЯ ТГ */
+        .tg-card { 
+            background: white; border-radius: 16px; padding: 16px; 
+            margin-bottom: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.03); position: relative;
+        }
+        .tg-card-header { font-weight: 700; font-size: 13px; color: var(--pia-navy); margin-bottom: 10px; display: block; }
+        .status-line { font-size: 14px; margin-bottom: 12px; font-weight: 600; }
+        .details-list { font-size: 13px; line-height: 1.6; color: #444; margin-bottom: 12px; }
+        
+        /* БЛОК ОБРАТНОЙ СВЯЗИ (КАК НА СКРИНШОТЕ) */
+        .feedback-box {
+            background: #fff9f0; border-left: 4px solid var(--orange-tg);
+            padding: 10px 14px; border-radius: 4px 10px 10px 4px; margin: 12px 0;
+        }
+        .feedback-label { font-size: 10px; font-weight: 800; color: var(--orange-tg); letter-spacing: 0.5px; margin-bottom: 4px; }
+        .feedback-text { font-size: 13px; font-style: italic; color: #555; line-height: 1.4; }
+
+        .card-btn {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #eee;
+            background: #f8fafc; color: var(--pia-navy); font-size: 12px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px;
+        }
+
+        /* НИЖНЕЕ МЕНЮ */
+        .bottom-nav { 
+            position: fixed; bottom: 0; width: 100%; background: white; 
+            display: flex; justify-content: space-around; padding: 12px 0 24px; 
+            border-top: 1px solid #eee; box-shadow: 0 -4px 10px rgba(0,0,0,0.03); z-index: 200;
+        }
+        .nav-item { text-align: center; color: #aaa; text-decoration: none; font-size: 9px; font-weight: 700; text-transform: uppercase; }
+        .nav-item.active { color: var(--pia-navy); }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; display: block; }
+
+        .hidden { display: none !important; }
+        .fade-out { opacity: 0; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <div id="auth-screen">
+        <div class="auth-logo">
+            <div style="font-weight: 800; font-size: 32px; letter-spacing: 2px;">PiaLink</div>
+            <div style="font-size: 10px; opacity: 0.6; letter-spacing: 3px; margin-top: 5px;">TRADE-IN SERVICE</div>
+        </div>
+        <button class="login-btn" id="login-trigger" onclick="handleLogin()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" width="20" id="tg-icon">
+            <div class="loader" id="login-loader"></div>
+            <span id="btn-text">ВОЙТИ ЧЕРЕЗ TELEGRAM</span>
+        </button>
+        <div style="color: white; font-size: 10px; margin-top: 20px; opacity: 0.4;">Версия 2.0.1 (RBI Edition)</div>
+    </div>
+
+    <div id="main-content" class="hidden">
+        <div class="pia-header">
+            <div class="pia-logo">
+                <div class="logo-icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                PiaLink
+            </div>
+            <div class="user-info">
+                <div class="user-name">Иван Иванов</div>
+                <div class="user-role">Менеджер RBI</div>
+            </div>
+        </div>
+
+        <div class="container">
+            <button class="btn-hero">⚡️ НОВАЯ ЗАЯВКА</button>
+
+            <div class="section-header">Мои последние заявки</div>
+
+            <div class="tg-card">
+                <span class="tg-card-header">ПИА Недвижимость: Трейд-ин</span>
+                <div class="status-line">Статус заявки: В работе ⚙️</div>
+                <div class="details-list">
+                    • Клиент: <b>Василий</b> (79123456754)<br>
+                    • Менеджер ПИА: <b>Ольга Исакова</b>
+                </div>
+                
+                <div class="feedback-box">
+                    <div class="feedback-label">ОБРАТНАЯ СВЯЗЬ 💬</div>
+                    <div class="feedback-text">"Созвонились, ждем фото объекта для финальной оценки"</div>
+                </div>
+
+                <div class="card-btn">💬 Чат с менеджером</div>
+            </div>
+
+            <div class="tg-card">
+                <span class="tg-card-header">ПИА Недвижимость: Трейд-ин</span>
+                <div class="status-line" style="margin-bottom: 5px;">Статус заявки: Отправлена 🤝</div>
+                <p style="font-size: 13px; color: #666; margin: 10px 0;">
+                    Спасибо за заявку! В ближайшее время объект будет принят в работу. На связи!
+                </p>
+                <div class="card-btn">Написать куратору ПИА</div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item"><span class="nav-icon">👤</span>Профиль</a>
+            <a href="#" class="nav-item active"><span class="nav-icon">📋</span>Заявки</a>
+            <a href="#" class="nav-item"><span class="nav-icon">📞</span>Куратор</a>
+        </nav>
+    </div>
+
+    <script>
+        function handleLogin() {
+            const btnText = document.getElementById('btn-text');
+            const icon = document.getElementById('tg-icon');
+            const loader = document.getElementById('login-loader');
+            
+            btnText.innerText = 'ПРОВЕРКА...';
+            icon.style.display = 'none';
+            loader.style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('auth-screen').classList.add('fade-out');
+                document.getElementById('main-content').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('auth-screen').style.display = 'none';
+                }, 500);
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
