@@ -73,20 +73,22 @@
     </div>
 
     <script>
-        // 1. Инициализация объекта Telegram (но не блокируем выполнение)
+        // 1. Инициализируем Телеграм
         const tg = window.Telegram.WebApp;
-
-        // 2. ПАРСИНГ URL МГНОВЕННО (до загрузки шрифтов и стилей)
+        
+        // ВАЖНО: Мы НЕ ждем tg.expand(), чтобы начать работать с данными
+        // Мы берем параметры сразу, как только скрипт прочел URL
+        
         const urlParams = new URLSearchParams(window.location.search);
         let startParam = urlParams.get('tgWebAppStartParam') || urlParams.get('start_param');
         
         let recId, chatId, msgId, secretFromUrl;
 
-        // Разбор "змейки" или обычных параметров
+        // Разбор параметров
         if (startParam) {
             const parts = startParam.split('_');
             recId = parts[0];
-            chatId = "-" + parts[1]; // Добавляем минус для группы
+            chatId = "-" + parts[1];
             msgId = parts[2];
             secretFromUrl = parts[3] || "";
         } else {
@@ -96,7 +98,9 @@
             secretFromUrl = urlParams.get('secret') || "";
         }
         
-        // 3. ОТПРАВКА ЗАПРОСА СРАЗУ (с заглушкой пользователя, чтобы Бипиум не падал)
+        // 2. ОТПРАВЛЯЕМ ЗАПРОС СРАЗУ
+        // Мы берем tg.initDataUnsafe.user ПРЯМО СЕЙЧАС. 
+        // Обычно данные уже доступны к этому моменту, даже если окно еще не раскрылось.
         const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
         
         const dataPromise = fetch(webhookUrl, {
@@ -108,14 +112,15 @@
                 chat_id: chatId,
                 message_id: msgId,
                 secret: secretFromUrl,
-                user: { id: "loading" } // <--- ВАЖНО: Заглушка, чтобы не ломался ServiceTask
+                // ВОЗВРАЩАЕМ РЕАЛЬНОГО ЮЗЕРА, как ты и просила
+                user: tg.initDataUnsafe.user || { id: "unknown" } 
             })
         }).then(res => res.json());
 
-        // 4. Разворачиваем приложение (параллельно с запросом)
+        // 3. Теперь запускаем визуал (expand), пока запрос летит
         tg.expand();
 
-        // 5. Обработка ответа, когда он прилетит
+        // 4. Обработка ответа
         dataPromise.then(data => {
             document.getElementById('history-box').innerHTML = data.history_html || "История пуста";
             if (data.history_count !== undefined) {
@@ -125,7 +130,6 @@
             const statusBox = document.getElementById('status-box');
             statusBox.innerHTML = data.status_html || "Не определен";
             
-            // Логика цветов бейджей
             const badge = statusBox.querySelector('.status-badge');
             if (badge) {
                 const txt = badge.innerText.toLowerCase();
@@ -140,12 +144,11 @@
             document.getElementById('details-box').innerHTML = "Ошибка связи с базой.";
         });
 
-        // --- ЛОГИКА КНОПОК (ТУТ УЖЕ БУДЕТ НАСТОЯЩИЙ USER) ---
+        // --- ЛОГИКА КНОПОК ---
         window.commentIdFromBpium = ""; 
         let savedText = "";
 
         function sendToBpium(action, extraData = {}) {
-            // К моменту клика tg.initDataUnsafe.user уже точно есть
             return fetch(webhookUrl, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
