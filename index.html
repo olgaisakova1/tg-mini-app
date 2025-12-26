@@ -72,36 +72,76 @@
         <div id="details-box" class="card card-details"><div class="loader"></div></div>
     </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-
-        // --- БЛОК ОБРАБОТКИ ПАРАМЕТРОВ ---
-        const startParam = tg.initDataUnsafe.start_param; 
+   <script>
+        // 1. СРАЗУ ПАРСИМ ПАРАМЕТРЫ (Не ждем Телеграм и шрифты)
+        const urlParams = new URLSearchParams(window.location.search);
+        let startParam = urlParams.get('tgWebAppStartParam') || urlParams.get('start_param'); // Телеграм передает start_param так
         let recId, chatId, msgId, secretFromUrl;
 
         if (startParam) {
-            // Если зашли через Директ-ссылку в группе (склейка через _)
             const parts = startParam.split('_');
             recId = parts[0];
-            chatId = "-" + parts[1]; // Сами приклеиваем минус для группы
+            chatId = "-" + parts[1];
             msgId = parts[2];
             secretFromUrl = parts[3] || "";
-            console.log("Данные из startapp:", {recId, chatId, msgId, secretFromUrl});
         } else {
-            // Если зашли через обычный URL (для тестов или старых ссылок)
-            const urlParams = new URLSearchParams(window.location.search);
+            // Фолбэк для обычных URL
             recId = urlParams.get('rec_id');
             chatId = urlParams.get('chat_id');
             msgId = urlParams.get('msg_id');
             secretFromUrl = urlParams.get('secret') || "";
-            console.log("Данные из URL:", {recId, chatId, msgId, secretFromUrl});
         }
+        
+        // 2. СРАЗУ ЗАПУСКАЕМ ЗАПРОС (Данные летят, пока грузится остальное)
+        const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
+        
+        // Сохраняем промис запроса в переменную, чтобы обработать его позже
+        const dataPromise = fetch(webhookUrl, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                action: 'load_data',
+                record_id: recId,
+                chat_id: chatId,
+                message_id: msgId,
+                secret: secretFromUrl
+            })
+        }).then(res => res.json());
 
+        // 3. ИНИЦИАЛИЗАЦИЯ ТЕЛЕГРАМА (Уже не блокирует запрос)
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // 4. ОБРАБОТКА ДАННЫХ (Когда прилетят)
+        dataPromise.then(data => {
+            document.getElementById('history-box').innerHTML = data.history_html || "История пуста";
+            if (data.history_count !== undefined) {
+                document.getElementById('history-title').innerText = `История (${data.history_count})`;
+            }
+            
+            const statusBox = document.getElementById('status-box');
+            statusBox.innerHTML = data.status_html || "Не определен";
+            
+            // Раскраска бейджа (твоя логика)
+            const badge = statusBox.querySelector('.status-badge');
+            if (badge) {
+                const txt = badge.innerText.toLowerCase();
+                if (txt.includes("новая")) badge.className = 'status-badge st-new';
+                if (txt.includes("передана")) badge.className = 'status-badge st-transfer';
+                if (txt.includes("работе")) badge.className = 'status-badge st-work';
+            }
+            
+            document.getElementById('details-box').innerHTML = data.details_html || "Нет данных";
+        }).catch(err => {
+            console.error("Ошибка загрузки:", err);
+            document.getElementById('details-box').innerHTML = "Ошибка связи с базой";
+        });
+
+        // --- ОСТАЛЬНЫЕ ФУНКЦИИ (Сохранение и прочее) ---
         window.commentIdFromBpium = ""; 
         let savedText = "";
-        const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
 
+        // Функция отправки для кнопок (нужна отдельно, так как loadData мы уже запустили)
         function sendToBpium(action, extraData = {}) {
             return fetch(webhookUrl, {
                 method: 'POST',
@@ -118,26 +158,6 @@
             });
         }
 
-        function loadData() {
-            sendToBpium('load_data')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('history-box').innerHTML = data.history_html || "История пуста";
-                if (data.history_count !== undefined) document.getElementById('history-title').innerText = `История (${data.history_count})`;
-                const statusBox = document.getElementById('status-box');
-                statusBox.innerHTML = data.status_html || "Не определен";
-                const badge = statusBox.querySelector('.status-badge');
-                if (badge) {
-                    const txt = badge.innerText.toLowerCase();
-                    if (txt.includes("новая")) badge.className = 'status-badge st-new';
-                    if (txt.includes("передана")) badge.className = 'status-badge st-transfer';
-                    if (txt.includes("работе")) badge.className = 'status-badge st-work';
-                }
-                document.getElementById('details-box').innerHTML = data.details_html || "Нет данных";
-            });
-        }
-        loadData();
-
         async function saveComment() {
             const text = document.getElementById('comment').value;
             if (!text.trim()) return;
@@ -153,8 +173,10 @@
                 document.getElementById('step-input').classList.add('hidden');
                 document.getElementById('step-confirm').classList.remove('hidden');
             } catch (e) {
-                document.getElementById('step-input').classList.add('hidden');
-                document.getElementById('step-confirm').classList.remove('hidden');
+                console.error(e);
+                alert("Ошибка сохранения");
+                btn.innerHTML = 'СОХРАНИТЬ';
+                btn.disabled = false;
             }
         }
 
