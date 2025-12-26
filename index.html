@@ -72,30 +72,33 @@
         <div id="details-box" class="card card-details"><div class="loader"></div></div>
     </div>
 
-   <script>
-        // 1. СРАЗУ ПАРСИМ ПАРАМЕТРЫ (Не ждем Телеграм и шрифты)
+    <script>
+        // 1. Инициализация объекта Telegram (но не блокируем выполнение)
+        const tg = window.Telegram.WebApp;
+
+        // 2. ПАРСИНГ URL МГНОВЕННО (до загрузки шрифтов и стилей)
         const urlParams = new URLSearchParams(window.location.search);
-        let startParam = urlParams.get('tgWebAppStartParam') || urlParams.get('start_param'); // Телеграм передает start_param так
+        let startParam = urlParams.get('tgWebAppStartParam') || urlParams.get('start_param');
+        
         let recId, chatId, msgId, secretFromUrl;
 
+        // Разбор "змейки" или обычных параметров
         if (startParam) {
             const parts = startParam.split('_');
             recId = parts[0];
-            chatId = "-" + parts[1];
+            chatId = "-" + parts[1]; // Добавляем минус для группы
             msgId = parts[2];
             secretFromUrl = parts[3] || "";
         } else {
-            // Фолбэк для обычных URL
             recId = urlParams.get('rec_id');
             chatId = urlParams.get('chat_id');
             msgId = urlParams.get('msg_id');
             secretFromUrl = urlParams.get('secret') || "";
         }
         
-        // 2. СРАЗУ ЗАПУСКАЕМ ЗАПРОС (Данные летят, пока грузится остальное)
+        // 3. ОТПРАВКА ЗАПРОСА СРАЗУ (с заглушкой пользователя, чтобы Бипиум не падал)
         const webhookUrl = 'https://alciona.bpium.ru/api/webrequest/tg_mini_app';
         
-        // Сохраняем промис запроса в переменную, чтобы обработать его позже
         const dataPromise = fetch(webhookUrl, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -104,15 +107,15 @@
                 record_id: recId,
                 chat_id: chatId,
                 message_id: msgId,
-                secret: secretFromUrl
+                secret: secretFromUrl,
+                user: { id: "loading" } // <--- ВАЖНО: Заглушка, чтобы не ломался ServiceTask
             })
         }).then(res => res.json());
 
-        // 3. ИНИЦИАЛИЗАЦИЯ ТЕЛЕГРАМА (Уже не блокирует запрос)
-        const tg = window.Telegram.WebApp;
+        // 4. Разворачиваем приложение (параллельно с запросом)
         tg.expand();
 
-        // 4. ОБРАБОТКА ДАННЫХ (Когда прилетят)
+        // 5. Обработка ответа, когда он прилетит
         dataPromise.then(data => {
             document.getElementById('history-box').innerHTML = data.history_html || "История пуста";
             if (data.history_count !== undefined) {
@@ -122,7 +125,7 @@
             const statusBox = document.getElementById('status-box');
             statusBox.innerHTML = data.status_html || "Не определен";
             
-            // Раскраска бейджа (твоя логика)
+            // Логика цветов бейджей
             const badge = statusBox.querySelector('.status-badge');
             if (badge) {
                 const txt = badge.innerText.toLowerCase();
@@ -133,16 +136,16 @@
             
             document.getElementById('details-box').innerHTML = data.details_html || "Нет данных";
         }).catch(err => {
-            console.error("Ошибка загрузки:", err);
-            document.getElementById('details-box').innerHTML = "Ошибка связи с базой";
+            console.error("Ошибка:", err);
+            document.getElementById('details-box').innerHTML = "Ошибка связи с базой.";
         });
 
-        // --- ОСТАЛЬНЫЕ ФУНКЦИИ (Сохранение и прочее) ---
+        // --- ЛОГИКА КНОПОК (ТУТ УЖЕ БУДЕТ НАСТОЯЩИЙ USER) ---
         window.commentIdFromBpium = ""; 
         let savedText = "";
 
-        // Функция отправки для кнопок (нужна отдельно, так как loadData мы уже запустили)
         function sendToBpium(action, extraData = {}) {
+            // К моменту клика tg.initDataUnsafe.user уже точно есть
             return fetch(webhookUrl, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -163,12 +166,15 @@
             if (!text.trim()) return;
             savedText = text;
             const btn = document.getElementById('save-btn');
+            
             btn.innerHTML = '<div class="loader" style="border-top-color:white;"></div>';
             btn.disabled = true;
+            
             try {
                 const response = await sendToBpium('save_comment', { comment: text });
                 const result = await response.json();
                 window.commentIdFromBpium = result.comment_id;
+                
                 document.getElementById('my-comment-preview').innerText = text;
                 document.getElementById('step-input').classList.add('hidden');
                 document.getElementById('step-confirm').classList.remove('hidden');
