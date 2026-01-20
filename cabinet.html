@@ -6,125 +6,159 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --pia-navy: #1d2a45; --pia-gold: #e1a23e; --bg-light: #f4f6f9; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding: 0; color: #333; }
+        body { font-family: 'Montserrat', sans-serif; background: #ccd1d9; margin: 0; padding: 0; color: #333; }
         
-        /* ШАПКА [cite: 10, 34] */
+        .app-wrapper { max-width: 500px; margin: 0 auto; background: var(--bg-light); min-height: 100vh; position: relative; box-shadow: 0 0 40px rgba(0,0,0,0.15); }
+
+        /* ШАПКА [cite: 10, 34, 35] */
         .pia-header { background: var(--pia-navy); padding: 18px 16px; color: white; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-        .pia-logo { cursor: pointer; display: flex; align-items: center; font-weight: 800; font-size: 18px; }
+        .pia-logo { cursor: pointer; display: flex; align-items: center; font-weight: 800; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
         .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
-        .logo-icon div { width: 5px; height: 5px; background: var(--pia-gold); }
-        .user-info { text-align: right; }
-        .user-name { font-size: 11px; font-weight: 700; text-transform: uppercase; }
-        .user-role { font-size: 9px; opacity: 0.7; }
+        .logo-icon div { width: 4px; height: 4px; background: var(--pia-gold); }
+        .user-name { font-size: 10px; font-weight: 700; text-transform: uppercase; margin: 0; letter-spacing: 0.5px; }
+        .user-role { font-size: 8px; opacity: 0.6; margin: 0; text-transform: uppercase; }
 
-        .container { padding: 16px; padding-bottom: 40px; }
+        /* МЕНЮ: ПУТЬ 3 (ТОЛЬКО ТЕКСТ) [cite: 15, 37, 47] */
+        #side-menu { 
+            position: absolute; top: 62px; left: 0; right: 0; background: white; 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1); z-index: 1000; display: none;
+        }
+        .menu-item { 
+            padding: 18px 20px; font-size: 10px; font-weight: 700; color: var(--pia-navy); 
+            text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 1px solid #f0f0f0; 
+            cursor: pointer; transition: 0.2s; position: relative;
+        }
+        .menu-item.active { color: var(--pia-navy); background: #f9fafb; }
+        .menu-item.active::before { 
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0; 
+            width: 4px; background: var(--pia-gold); 
+        }
+
+        .container { padding: 16px; }
         
-        /* ГЕРОЙ-КНОПКА [cite: 17, 36] */
-        .btn-hero { width: 100%; padding: 18px; border-radius: 14px; border: none; font-size: 13px; font-weight: 700; background: var(--pia-gold); color: white; text-transform: uppercase; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(225,162,62,0.3); cursor: pointer; }
+        /* КНОПКА [cite: 17, 18, 36] */
+        .btn-hero { 
+            width: 100%; padding: 16px; border-radius: 12px; border: none; 
+            font-size: 11px; font-weight: 700; background: var(--pia-gold); 
+            color: white; text-transform: uppercase; margin-bottom: 24px; 
+            letter-spacing: 1px; cursor: pointer;
+        }
 
-        /* ТАБЫ И ПОИСК */
-        .search-section { margin-bottom: 24px; }
-        .tabs { display: flex; background: #eee; border-radius: 10px; padding: 3px; margin-bottom: 12px; }
-        .tab-item { flex: 1; text-align: center; padding: 8px; font-size: 10px; font-weight: 700; border-radius: 8px; cursor: pointer; color: #777; transition: 0.3s; }
+        /* ПОИСКОВАЯ КОНСОЛЬ */
+        .search-console { background: white; border-radius: 16px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 20px; }
+        .search-label { font-size: 9px; font-weight: 800; color: #99aab5; margin-bottom: 12px; letter-spacing: 1.2px; }
+        
+        .tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+        .tab-item { 
+            flex: 1; text-align: center; padding: 10px; font-size: 9px; font-weight: 700; 
+            border-radius: 6px; cursor: pointer; color: #7f8c8d; background: #f4f6f9; transition: 0.2s; 
+        }
         .tab-item.active { background: var(--pia-navy); color: white; }
         
-        .search-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #ddd; font-family: inherit; font-size: 14px; box-sizing: border-box; outline: none; }
+        .search-input { 
+            width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #e0e4e8; 
+            font-family: inherit; font-size: 14px; box-sizing: border-box; outline: none; 
+        }
 
-        /* КАРТОЧКИ ЗАЯВОК */
-        .apps-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        @media (min-width: 768px) { .apps-grid { grid-template-columns: 1fr 1fr; } } /*  */
-
-        .app-card { background: white; border-radius: 14px; padding: 16px; border-left: 5px solid var(--pia-gold); box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; }
-        .app-card:active { transform: scale(0.98); background: #fafafa; }
+        /* КАРТОЧКИ */
+        .apps-grid { display: flex; flex-direction: column; gap: 12px; }
+        .app-card { 
+            background: white; border-radius: 14px; padding: 18px; 
+            border-left: 5px solid var(--pia-gold); box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
+            display: flex; align-items: center; justify-content: space-between; cursor: pointer; 
+        }
+        .app-card:active { background: #fcfcfc; transform: scale(0.99); }
         
-        .card-content { flex: 1; }
-        .dev-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; display: block; }
-        .dev-manager { font-size: 11px; color: #666; margin-bottom: 8px; display: block; }
-        .client-info { font-size: 13px; font-weight: 500; }
-        .app-date { font-size: 10px; color: #aaa; margin-top: 8px; display: block; }
-        
-        .chevron { color: #ccc; font-size: 20px; font-weight: 300; padding-left: 10px; }
-
-        .hidden { display: none; }
+        .dev-name { font-weight: 700; font-size: 15px; color: var(--pia-navy); margin-bottom: 4px; display: block; }
+        .dev-manager { font-size: 11px; color: #7f8c8d; margin-bottom: 10px; display: block; }
+        .client-info { font-size: 13px; font-weight: 600; color: #333; }
+        .app-date { font-size: 9px; color: #bdc3c7; margin-top: 10px; display: block; text-transform: uppercase; }
+        .chevron { color: #dfe3e8; font-size: 22px; font-weight: 300; }
     </style>
 </head>
 <body>
 
-    <div id="screen-list" class="screen">
-        <div class="pia-header">
-            <div class="pia-logo" onclick="toggleMenu()">
-                <div class="logo-icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                PiaLink
-            </div>
-            <div class="user-info">
-                <div class="user-name">ОЛЬГА ИСАКОВА</div>
-                <div class="user-role">МЕНЕДЖЕР ПО ТРЕЙД-ИН</div>
-            </div>
+<div class="app-wrapper">
+    <div class="pia-header">
+        <div class="pia-logo" onclick="toggleMenu()">
+            <div class="logo-icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+            PiaLink
         </div>
-
-        <div class="container">
-            <button class="btn-hero">⚡️ НОВАЯ ЗАЯВКА</button>
-
-            <div class="search-section">
-                <div class="tabs">
-                    <div class="tab-item active" onclick="setSearchMode('client')">КЛИЕНТ</div>
-                    <div class="tab-item" onclick="setSearchMode('dev')">ЗАСТРОЙЩИК</div>
-                </div>
-                <div id="search-container">
-                    <input type="text" class="search-input" id="search-field" placeholder="Имя или телефон клиента...">
-                </div>
-            </div>
-
-            <div class="apps-grid">
-                <div class="app-card" onclick="openDetails()">
-                    <div class="card-content">
-                        <span class="dev-name">RBI</span>
-                        <span class="dev-manager">Ангелина Г., 79692051400</span>
-                        <div class="client-info"><b>Клиент:</b> Лина (79215786295)</div>
-                        <span class="app-date">Дата: 20.01.2026</span>
-                    </div>
-                    <div class="chevron">›</div>
-                </div>
-
-                <div class="app-card" onclick="openDetails()">
-                    <div class="card-content">
-                        <span class="dev-name">ЛСР</span>
-                        <span class="dev-manager">Дмитрий К., 79001234567</span>
-                        <div class="client-info"><b>Клиент:</b> Александр (79119876543)</div>
-                        <span class="app-date">Дата: 19.01.2026</span>
-                    </div>
-                    <div class="chevron">›</div>
-                </div>
-            </div>
+        <div class="user-info">
+            <p class="user-name">ОЛЬГА ИСАКОВА</p>
+            <p class="user-role">МЕНЕДЖЕР ПО ТРЕЙД-ИН</p>
         </div>
     </div>
 
-    <script>
-        function setSearchMode(mode) {
-            const field = document.getElementById('search-field');
-            const container = document.getElementById('search-container');
-            const tabs = document.querySelectorAll('.tab-item');
-            
-            tabs.forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+    <div id="side-menu">
+        <div class="menu-item active" onclick="toggleMenu()">Мои заявки</div>
+        <div class="menu-item" onclick="toggleMenu()">Диалоги Софии</div>
+        <div class="menu-item" onclick="toggleMenu()">Группы Telegram</div>
+    </div>
 
-            if (mode === 'client') {
-                container.innerHTML = '<input type="text" class="search-input" placeholder="Имя или телефон клиента...">';
-            } else {
-                container.innerHTML = `
-                    <select class="search-input">
-                        <option value="">Выберите застройщика...</option>
-                        <option>RBI</option>
-                        <option>ЛСР</option>
-                        <option>Легенда</option>
-                    </select>
-                `;
-            }
-        }
+    <div class="container">
+        <button class="btn-hero">⚡️ НОВАЯ ЗАЯВКА</button>
 
-        function openDetails() {
-            alert('Переход в детальную карточку заявки...');
+        <div class="search-console">
+            <div class="search-label">ИСКАТЬ ПО:</div>
+            <div class="tabs">
+                <div id="tab-client" class="tab-item active" onclick="setSearchMode('client')">КЛИЕНТУ</div>
+                <div id="tab-dev" class="tab-item" onclick="setSearchMode('dev')">ЗАСТРОЙЩИКУ</div>
+            </div>
+            <div id="search-container">
+                <input type="text" class="search-input" placeholder="Имя или 10 цифр телефона...">
+            </div>
+        </div>
+
+        <div class="apps-grid">
+            <div class="app-card" onclick="alert('Карточка кликабельна')">
+                <div style="flex:1">
+                    <span class="dev-name">RBI</span>
+                    <span class="dev-manager">Ангелина Г., 79692051400</span>
+                    <div class="client-info">Лина (79215786295)</div>
+                    <span class="app-date">20 января 2026</span>
+                </div>
+                <div class="chevron">›</div>
+            </div>
+
+            <div class="app-card">
+                <div style="flex:1">
+                    <span class="dev-name">ЛСР</span>
+                    <span class="dev-manager">Дмитрий К., 79001234567</span>
+                    <div class="client-info">Александр (79119876543)</div>
+                    <span class="app-date">19 января 2026</span>
+                </div>
+                <div class="chevron">›</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('side-menu');
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function setSearchMode(mode) {
+        const container = document.getElementById('search-container');
+        document.getElementById('tab-client').classList.toggle('active', mode === 'client');
+        document.getElementById('tab-dev').classList.toggle('active', mode === 'dev');
+
+        if (mode === 'client') {
+            container.innerHTML = '<input type="text" class="search-input" placeholder="Имя или 10 цифр телефона...">';
+        } else {
+            container.innerHTML = `
+                <select class="search-input">
+                    <option value="">Выберите компанию...</option>
+                    <option>RBI</option>
+                    <option>ЛСР</option>
+                    <option>Легенда</option>
+                </select>
+            `;
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
