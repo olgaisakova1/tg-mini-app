@@ -7,58 +7,32 @@
     <style>
         :root { --pia-navy: #1d2a45; --pia-gold: #e1a23e; --bg-light: #f4f6f9; }
         body { font-family: 'Montserrat', sans-serif; background: #ccd1d9; margin: 0; padding: 0; color: #333; }
-        
-        /* ОГРАНИЧИТЕЛЬ ШИРИНЫ */
         .app-wrapper { max-width: 500px; margin: 0 auto; background: var(--bg-light); min-height: 100vh; position: relative; box-shadow: 0 0 40px rgba(0,0,0,0.15); }
 
-        /* ШАПКА */
         .pia-header { background: var(--pia-navy); padding: 18px 16px; color: white; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
         .pia-logo { cursor: pointer; display: flex; align-items: center; font-weight: 800; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
         .logo-icon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-right: 10px; }
         .logo-icon div { width: 4px; height: 4px; background: var(--pia-gold); }
-        .user-name { font-size: 10px; font-weight: 700; text-transform: uppercase; margin: 0; letter-spacing: 0.5px; }
-        .user-role { font-size: 8px; opacity: 0.6; margin: 0; text-transform: uppercase; }
-
-        /* МЕНЮ: ТИПОГРАФИКА */
-        #side-menu { position: absolute; top: 62px; left: 0; right: 0; background: white; box-shadow: 0 15px 30px rgba(0,0,0,0.1); z-index: 1000; display: none; }
-        .menu-item { padding: 18px 20px; font-size: 10px; font-weight: 700; color: var(--pia-navy); text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 1px solid #f0f0f0; cursor: pointer; position: relative; }
-        .menu-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--pia-gold); }
+        .user-name { font-size: 10px; font-weight: 700; text-transform: uppercase; margin: 0; }
 
         .container { padding: 16px; }
-        
-        /* КНОПКА НОВАЯ ЗАЯВКА */
-        .btn-hero { width: 100%; padding: 16px; border-radius: 12px; border: none; font-size: 11px; font-weight: 700; background: var(--pia-gold); color: white; text-transform: uppercase; margin-bottom: 24px; cursor: pointer; }
-
-        /* ПОИСКОВАЯ КОНСОЛЬ */
-        .search-console { background: white; border-radius: 16px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 20px; }
-        .search-label { font-size: 9px; font-weight: 800; color: #99aab5; margin-bottom: 12px; letter-spacing: 1.2px; text-transform: uppercase; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 15px; }
-        .tab-item { flex: 1; text-align: center; padding: 10px; font-size: 9px; font-weight: 700; border-radius: 6px; cursor: pointer; color: #7f8c8d; background: #f4f6f9; }
-        .tab-item.active { background: var(--pia-navy); color: white; }
-        .search-input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #e0e4e8; font-family: inherit; font-size: 14px; box-sizing: border-box; outline: none; }
-
-        /* КАРТОЧКИ В СПИСКЕ */
-        .app-card { background: white; border-radius: 14px; padding: 18px; border-left: 5px solid var(--pia-gold); box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; cursor: pointer; margin-bottom: 12px; }
-        .dev-name { font-weight: 700; font-size: 15px; color: var(--pia-navy); margin-bottom: 4px; display: block; }
-
-        /* ЭКРАН ПОДРОБНО (СТЕРИЛЬНЫЙ) */
         .back-link { font-size: 10px; font-weight: 700; color: var(--pia-gold); cursor: pointer; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 20px; display: inline-block; }
+
+        /* ФОРМА И БЛОКИ */
         .card-box { background: white; border-radius: 14px; padding: 20px; margin-bottom: 24px; border: 1px solid rgba(0,0,0,0.02); }
         .box-label { font-size: 9px; font-weight: 800; color: #99aab5; margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase; }
-        
-        textarea { width: 100%; height: 85px; border-radius: 10px; border: 1px solid #ddd; padding: 14px; font-family: inherit; font-size: 14px; box-sizing: border-box; resize: none; outline: none; margin-bottom: 12px; }
-        .btn-action-gold { width: 100%; padding: 15px; border-radius: 10px; border: none; background: var(--pia-gold); color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
-        
-        .history-placeholder { border: 1px solid #f4f6f9; border-radius: 10px; padding: 35px 10px; text-align: center; color: #bdc3c7; font-size: 12px; font-style: italic; }
-
-        .status-tag { font-size: 10px; font-weight: 700; color: var(--pia-gold); border: 1px solid #f9ebbe; background: #fffcf0; padding: 5px 10px; border-radius: 6px; float: right; text-transform: uppercase; }
         .accent-navy { border-left: 5px solid var(--pia-navy); }
         .accent-gold { border-left: 5px solid var(--pia-gold); }
 
-        .data-row { margin-bottom: 14px; font-size: 13px; color: #333; }
-        .data-label { font-size: 11px; color: #99aab5; display: inline; margin-right: 5px; font-weight: 500; }
-        
-        .btn-contact { width: 100%; padding: 14px; border-radius: 10px; border: none; background: var(--pia-navy); color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .input-group { margin-bottom: 18px; }
+        .input-label { font-size: 10px; color: #99aab5; display: block; margin-bottom: 6px; font-weight: 600; }
+        .form-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e0e4e8; font-family: inherit; font-size: 14px; box-sizing: border-box; outline: none; background: #fff; }
+
+        .btn-submit { width: 100%; padding: 16px; border-radius: 12px; border: none; font-size: 11px; font-weight: 700; background: #cce7d0; color: #2e7d32; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-top: 10px; }
+
+        /* ЭКРАН СПИСКА */
+        .btn-hero { width: 100%; padding: 16px; border-radius: 12px; border: none; font-size: 11px; font-weight: 700; background: var(--pia-gold); color: white; text-transform: uppercase; margin-bottom: 24px; cursor: pointer; }
+        .app-card { background: white; border-radius: 14px; padding: 18px; border-left: 5px solid var(--pia-gold); box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; cursor: pointer; margin-bottom: 12px; }
 
         .hidden { display: none !important; }
     </style>
@@ -67,125 +41,98 @@
 
 <div class="app-wrapper">
     <div class="pia-header">
-        <div class="pia-logo" onclick="toggleMenu()">
+        <div class="pia-logo">
             <div class="logo-icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
             PiaLink
         </div>
-        <div class="user-info">
-            <p class="user-name">ОЛЬГА ИСАКОВА</p>
-            <p class="user-role">МЕНЕДЖЕР ПО ТРЕЙД-ИН</p>
-        </div>
-    </div>
-
-    <div id="side-menu">
-        <div class="menu-item active" onclick="toggleMenu()">Мои заявки</div>
-        <div class="menu-item" onclick="toggleMenu()">Диалоги Софии</div>
-        <div class="menu-item" onclick="toggleMenu()">Группы Telegram</div>
+        <div class="user-info"><p class="user-name">ОЛЬГА ИСАКОВА</p></div>
     </div>
 
     <div id="screen-list" class="container">
-        <button class="btn-hero">⚡️ НОВАЯ ЗАЯВКА</button>
-        <div class="search-console">
-            <div class="search-label">ИСКАТЬ ПО:</div>
-            <div class="tabs">
-                <div id="tab-client" class="tab-item active" onclick="setSearchMode('client')">КЛИЕНТУ</div>
-                <div id="tab-dev" class="tab-item" onclick="setSearchMode('dev')">ЗАСТРОЙЩИКУ</div>
-            </div>
-            <div id="search-container">
-                <input type="text" class="search-input" placeholder="Имя или 10 цифр телефона...">
-            </div>
-        </div>
-
+        <button class="btn-hero" onclick="toggleScreen('form')">⚡️ НОВАЯ ЗАЯВКА</button>
         <div class="app-card" onclick="toggleScreen('detail')">
             <div style="flex:1">
-                <span class="dev-name">RBI</span>
-                <span style="font-size: 11px; color: #7f8c8d; margin-bottom: 8px; display: block;">Ангелина Г., 79692051400</span>
-                <div style="font-size: 13px; font-weight: 600;">Лина (79215786295)</div>
-                <span style="font-size: 9px; color: #bdc3c7; margin-top: 8px; display: block;">20 ЯНВАРЯ 2026</span>
+                <span style="font-weight: 700; color: var(--pia-navy);">RBI</span>
+                <div style="font-size: 13px;">Лина (79215786295)</div>
             </div>
             <div style="color: #dfe3e8; font-size: 22px;">›</div>
         </div>
     </div>
 
-    <div id="screen-detail" class="container hidden">
-        <span class="back-link" onclick="toggleScreen('list')">← НАЗАД</span>
+    <div id="screen-form" class="container hidden">
+        <span class="back-link" onclick="toggleScreen('list')">← ОТМЕНА</span>
         
-        <div class="card-box">
-            <div class="box-label">Ваш комментарий</div>
-            <textarea placeholder="Текст для базы..."></textarea>
-            <button class="btn-action-gold">Сохранить</button>
-        </div>
-
-        <div class="card-box">
-            <div class="box-label">История (0)</div>
-            <div class="history-placeholder">Записей пока нет...</div>
-        </div>
-
         <div class="card-box accent-navy">
-            <div class="status-tag">ПЕРЕДАНА МЕНЕДЖЕРУ</div>
-            <div class="box-label">Статус и ответственный</div>
-            <div class="data-row">
-                <span class="data-label">Менеджер PIA:</span> <b>Ольга А.</b>
+            <div class="box-label">Информация о застройщике</div>
+            <div class="input-group">
+                <span class="input-label">Застройщик</span>
+                <select class="form-input" id="dev-select">
+                    <option value="">Выбрать...</option>
+                    <option>RBI</option>
+                    <option>ЛСР</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="input-label">Менеджер застройщика</span>
+                <select class="form-input">
+                    <option value="">Сначала выберите застройщика...</option>
+                </select>
             </div>
         </div>
 
         <div class="card-box accent-gold">
-            <div class="box-label">Детали заявки</div>
-            <div style="font-size: 13px; margin-bottom: 15px;">
-                📝 Заявка от застройщика <b>RBI</b><br>
-                <span style="font-size: 11px; color: #7f8c8d;">Менеджер застройщика: Ангелина Г (т. 79692051400)</span>
+            <div class="box-label">Данные клиента</div>
+            <div class="input-group">
+                <span class="input-label">Имя клиента</span>
+                <input type="text" class="form-input" placeholder="Введите имя...">
             </div>
-            
-            <button class="btn-contact" onclick="alert('Чат в Telegram')">💬 Написать менеджеру</button>
-            <button class="btn-contact" id="check-btn" style="background:#f4f6f9; color: var(--pia-navy); margin-top: 10px; border: 1px solid #ddd;" onclick="checkMessengers()">Проверить контакты</button>
-            
-            <div id="check-result" class="hidden" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0f0f0;">
-                <div style="color: var(--pia-gold); font-weight: 700; font-size: 11px; margin-bottom: 6px;">✓ TELEGRAM: ЗАРЕГИСТРИРОВАН</div>
-                <div style="color: #99aab5; font-weight: 700; font-size: 11px;">✕ MAX: НЕ НАЙДЕН</div>
+            <div class="input-group">
+                <span class="input-label">Телефон клиента</span>
+                <input type="tel" class="form-input" placeholder="79_________">
             </div>
+            <div class="input-group">
+                <span class="input-label">Программы</span>
+                <select class="form-input">
+                    <option>выкуп</option>
+                    <option>трейд-ин</option>
+                    <option>нет данных</option>
+                </select>
+            </div>
+        </div>
 
-            <div style="margin-top: 20px;">
-                <div class="data-row"><span class="data-label">Клиент:</span> <b>Лина (79215786295)</b></div>
-                <div class="data-row"><span class="data-label">Программы:</span> трейд ин, выкуп</div>
-                <div class="data-row"><span class="data-label">Тип объекта:</span> 2 ком</div>
-                <div class="data-row"><span class="data-label">ЖК:</span> ЖК Гений</div>
-                <div class="data-row"><span class="data-label">Форма оплаты:</span> рассрочка</div>
-                <div class="data-row"><span class="data-label">Бюджет:</span> 25</div>
+        <div class="card-box" style="border-left: 5px solid #ddd;">
+            <div class="box-label">Информация о покупаемом объекте</div>
+            <div class="input-group">
+                <span class="input-label">Жилой комплекс</span>
+                <input type="text" class="form-input" placeholder="Название ЖК...">
             </div>
+            <div class="input-group">
+                <span class="input-label">Бюджет покупки</span>
+                <input type="text" class="form-input" placeholder="Сумма...">
+            </div>
+            <button class="btn-submit">ОТПРАВИТЬ ЗАЯВКУ</button>
+        </div>
+    </div>
+
+    <div id="screen-detail" class="container hidden">
+        <span class="back-link" onclick="toggleScreen('list')">← К ЗАЯВКАМ</span>
+        <div class="card-box accent-navy">
+            <div class="box-label">Детали заявки</div>
+            <div style="font-size: 13px;">Тут данные по RBI и Лине...</div>
         </div>
     </div>
 </div>
 
 <script>
-    function toggleMenu() {
-        const menu = document.getElementById('side-menu');
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-
     function toggleScreen(screen) {
-        document.getElementById('screen-list').classList.toggle('hidden', screen === 'detail');
-        document.getElementById('screen-detail').classList.toggle('hidden', screen === 'list');
+        document.getElementById('screen-list').classList.add('hidden');
+        document.getElementById('screen-detail').classList.add('hidden');
+        document.getElementById('screen-form').classList.add('hidden');
+        
+        if (screen === 'list') document.getElementById('screen-list').classList.remove('hidden');
+        if (screen === 'detail') document.getElementById('screen-detail').classList.remove('hidden');
+        if (screen === 'form') document.getElementById('screen-form').classList.remove('hidden');
         window.scrollTo(0,0);
-    }
-
-    function setSearchMode(mode) {
-        const container = document.getElementById('search-container');
-        document.getElementById('tab-client').classList.toggle('active', mode === 'client');
-        document.getElementById('tab-dev').classList.toggle('active', mode === 'dev');
-        if (mode === 'client') {
-            container.innerHTML = '<input type="text" class="search-input" placeholder="Имя или 10 цифр телефона...">';
-        } else {
-            container.innerHTML = '<select class="search-input"><option value="">Выберите компанию из списка...</option><option>RBI</option><option>ЛСР</option></select>';
-        }
-    }
-
-    function checkMessengers() {
-        const btn = document.getElementById('check-btn');
-        btn.innerText = 'ПРОВЕРКА...';
-        setTimeout(() => {
-            btn.classList.add('hidden');
-            document.getElementById('check-result').classList.remove('hidden');
-        }, 1200);
     }
 </script>
 </body>
