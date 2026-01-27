@@ -46,9 +46,15 @@
 
     <div class="container">
         <div id="step-input">
-            <div class="section-header">Ваш комментарий</div>
-            <textarea id="comment" placeholder="Текст для базы..."></textarea>
-            <button class="btn btn-gold" style="width:100%" id="save-btn" onclick="saveComment()">СОХРАНИТЬ</button>
+            <div class="section-header">Обратная связь для застройщика</div>
+            <textarea id="comment" placeholder="Что менеджеру застройщика нужно знать по этой заявке прямо сейчас?"></textarea>
+            <button class="btn btn-gold" style="width:100%" id="save-btn" onclick="saveComment()">ПЕРЕДАТЬ МЕНЕДЖЕРУ</button>
+        </div>
+
+        <div id="step-success" class="hidden">
+            <div class="card" style="border-left: 5px solid #2e7d32; background: #e8f5e9; color: #2e7d32; font-weight: 600; text-align: center;">
+                ✅ Ответ передан менеджеру
+            </div>
         </div>
 
         <div id="step-confirm" class="hidden">
@@ -189,31 +195,43 @@
             });
         }
 
-        async function saveComment() {
+       async function saveComment() {
             const text = document.getElementById('comment').value;
             if (!text.trim()) return;
-            savedText = text;
+
             const btn = document.getElementById('save-btn');
+            const inputBlock = document.getElementById('step-input');
+            const successBlock = document.getElementById('step-success');
+            const historyBox = document.getElementById('history-box');
+
+            // Запускаем лоадер на кнопке
             btn.innerHTML = '<div class="loader" style="border-top-color:white;"></div>';
             btn.disabled = true;
+
             try {
+                // Шлем запрос в Bpium (action остался старый, как ты просила)
                 const response = await sendToBpium('save_comment', { comment: text });
                 const result = await response.json();
-                window.commentIdFromBpium = result.comment_id;
-                document.getElementById('my-comment-preview').innerText = text;
-                document.getElementById('step-input').classList.add('hidden');
-                document.getElementById('step-confirm').classList.remove('hidden');
-            } catch (e) {
-                document.getElementById('step-input').classList.add('hidden');
-                document.getElementById('step-confirm').classList.remove('hidden');
-            }
-        }
 
-        function confirmSend(isAgreed) {
-            const btn = document.getElementById('confirm-btn');
-            btn.innerHTML = '<div class="loader" style="border-top-color:white;"></div>';
-            sendToBpium('confirm_send', { comment_id: window.commentIdFromBpium, comment: savedText })
-            .then(() => tg.close());
+                // 1. Обновляем историю тем, что прислал Bpium
+                if (result.history_html) {
+                    historyBox.innerHTML = result.history_html;
+                    // Обновляем счетчик в заголовке, если он есть
+                    if (result.history_count !== undefined) {
+                        const hTitle = document.getElementById('history-title');
+                        if (hTitle) hTitle.innerText = `История (${result.history_count})`;
+                    }
+                }
+
+                // 2. Скрываем поле ввода и показываем плашку успеха
+                inputBlock.classList.add('hidden');
+                successBlock.classList.remove('hidden');
+
+            } catch (e) {
+                console.error("Ошибка:", e);
+                btn.innerText = "ОШИБКА. ПОПРОБУЙТЕ ЕЩЕ РАЗ";
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
