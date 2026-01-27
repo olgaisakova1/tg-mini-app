@@ -157,11 +157,11 @@
         // 4. ОБРАБОТКА ОТВЕТА (Одинаковая для обоих вариантов)
        dataPromise.then(data => {
 
-            /* // Проверка прав доступа:
+           // Проверка прав доступа:
             if (data.can_edit === false) {
                   document.getElementById('step-input').classList.add('hidden');
                  }
-           */
+        
             document.getElementById('history-box').innerHTML = data.history_html || "История пуста";
             if (data.history_count !== undefined) document.getElementById('history-title').innerText = `История (${data.history_count})`;
             
