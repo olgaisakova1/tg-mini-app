@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PIA LINK | Card Prototype</title>
+    <!-- Шрифт -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Иконки -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- DESIGN TOKENS --- */
+        :root {
+            --pia-navy: #1d2a45;
+            --pia-gold: #e1a23e;
+            --pia-gold-light: #fff8e1;
+            --bg-app: #f4f6f9;     /* Цвет фона внутри приложения */
+            --bg-desktop: #e0e5ec; /* Цвет фона "стола" (для презентации) */
+            --text-main: #333333;
+            --text-secondary: #8899a6;
+            --radius-card: 16px;
+            --radius-btn: 12px;
+        }
+
+        /* --- BASE RESET --- */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-desktop); /* Серый фон для контраста */
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Чтобы при скролле не прыгало */
+        }
+
+        /* --- PHONE MOCKUP (РАМА ТЕЛЕФОНА) --- */
+        /* Это эмуляция корпуса телефона, чтобы ты видела границы */
+        .phone-frame {
+            width: 100%;
+            max-width: 420px; /* Ширина типичного смартфона */
+            background: var(--bg-app);
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+            margin: 0 auto;
+        }
+
+        /* Если открываем реально с мобилки - убираем раму */
+        @media (max-width: 480px) {
+            body { background: var(--bg-app); }
+            .phone-frame { box-shadow: none; max-width: 100%; }
+        }
+
+        /* --- HEADER --- */
+        .pia-header {
+            background: var(--pia-navy);
+            padding: 16px 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(29, 42, 69, 0.15);
+        }
+        .pia-logo {
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pia-logo i { color: var(--pia-gold); }
+
+        /* --- CONTAINER --- */
+        .container {
+            padding: 16px;
+            padding-bottom: 100px; /* Место под FAB */
+        }
+
+        /* --- BLOCKS --- */
+        .block-card {
+            background: #fff;
+            border-radius: var(--radius-card);
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            overflow: hidden;
+        }
+
+        /* Стили границ */
+        .style-passport { border-left: 5px solid #bdc3c7; }
+        .style-sofia { border-left: 5px solid var(--pia-navy); }
+        .style-client { border-left: 5px solid var(--pia-gold); }
+        .style-details { border-left: 5px solid transparent; }
+
+        .block-content { padding: 16px; }
+
+        /* --- TYPOGRAPHY --- */
+        .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            margin-bottom: 4px;
+        }
+        .value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .value-big {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* --- BADGES --- */
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .badge.st-wait { background: var(--pia-gold-light); color: #b78103; }
+
+        /* --- BUTTONS --- */
+        .btn {
+            border: none;
+            border-radius: var(--radius-btn);
+            padding: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+            width: 100%; /* Кнопка занимает всю доступную ширину контейнера */
+        }
+        
+        .btn-gold { background: var(--pia-gold); color: white; }
+        .btn-navy { background: var(--pia-navy); color: white; }
+        .btn-outline { 
+            background: white; 
+            border: 1px solid #ddd; 
+            color: #555; 
+            width: auto; /* Инлайновые кнопки не растягиваем */
+            padding: 8px 12px;
+            font-size: 10px;
+        }
+        
+        /* Кнопки в ряд */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        /* Inline Actions */
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Выравнивание по верху, чтобы кнопки не прыгали */
+        }
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f2f5;
+            color: var(--pia-navy);
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .icon-btn.tg { color: #229ED9; background: #e3f2fd; }
+
+        /* --- ACCORDION --- */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding: 0 16px;
+        }
+        .accordion-content.open {
+            max-height: 500px;
+            padding-bottom: 16px;
+            border-top: 1px dashed #eee;
+            padding-top: 10px;
+        }
+        .chevron { transition: transform 0.3s; cursor: pointer; }
+        .chevron.rotate { transform: rotate(180deg); }
+
+        /* --- FAB --- */
+        .fab {
+            position: absolute; /* Внутри phone-frame */
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: var(--pia-gold);
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(225, 162, 62, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            z-index: 200;
+            cursor: pointer;
+        }
+
+        /* Для красивого скроллбара внутри "телефона" */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+    </style>
+</head>
+<body>
+
+    <!-- РАМА ТЕЛЕФОНА -->
+    <div class="phone-frame">
+
+        <!-- 1. HEADER -->
+        <div class="pia-header">
+            <div class="pia-logo">
+                <i class="fa-solid fa-grid-2"></i> PiaLink
+            </div>
+            <div style="font-size: 10px; opacity: 0.8; font-weight: 600;">v13.0</div>
+        </div>
+
+        <div class="container">
+
+            <!-- 2. БЛОК ПАСПОРТ -->
+            <div class="block-card style-passport">
+                <div class="block-content">
+                    <div class="action-row" style="margin-bottom: 8px;">
+                        <span class="label">Заявка #1212</span>
+                        <span class="badge st-wait">ЖДЕМ ОБРАТНУЮ СВЯЗЬ</span>
+                    </div>
+                    <div class="value-big">RBI / Ultra City</div>
+                    <div class="value" style="margin-bottom: 0; font-size: 12px; opacity: 0.7;">
+                        <i class="fa-regular fa-clock"></i> 14.02.2026 14:30
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. БЛОК СОФИЯ -->
+            <div class="block-card style-sofia">
+                <div class="block-content">
+                    <div class="action-row">
+                        <div>
+                            <div class="label">СТАТУС БОТА</div>
+                            <div class="value" style="margin-bottom: 4px;">
+                                <i class="fa-solid fa-robot" style="color:var(--pia-navy)"></i> Активна
+                            </div>
+                            <div style="font-size: 11px; color: #666;">Посл. ответ: 2 мин назад</div>
+                        </div>
+                        <!-- Кнопка -->
+                        <button class="btn btn-navy" style="width: auto; padding: 0 20px;">
+                            <i class="fa-brands fa-telegram"></i> ДИАЛОГ
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. БЛОК КЛИЕНТ -->
+            <div class="block-card style-client">
+                <div class="block-content">
+                    <div class="action-row">
+                        <div>
+                            <div class="label">КЛИЕНТ</div>
+                            <div class="value-big">Юрий</div>
+                            <div class="value" style="margin-bottom: 0;">+7 911 214-89-46</div>
+                        </div>
+                        <!-- Связь -->
+                        <div style="display: flex; gap: 8px;">
+                            <a href="#" class="icon-btn"><i class="fa-solid fa-phone"></i></a>
+                            <a href="#" class="icon-btn tg"><i class="fa-regular fa-paper-plane"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Развертка -->
+                <div class="block-content" style="padding-top:0; padding-bottom: 8px;">
+                    <div class="action-row" onclick="toggleAccordion('client-acc', this)">
+                        <span class="label" style="cursor: pointer; border-bottom: 1px dashed #ccc;">Показать доп. контакты</span>
+                        <i class="fa-solid fa-chevron-down chevron" style="font-size: 12px; color: #999;"></i>
+                    </div>
+                </div>
+                <div id="client-acc" class="accordion-content">
+                    <div class="label">EMAIL</div>
+                    <div class="value">yury@example.com</div>
+                    <div class="label">КОНТАКТНОЕ ЛИЦО</div>
+                    <div class="value">Жена (Мария)</div>
+                </div>
+            </div>
+
+            <!-- 5. БЛОК МЕНЕДЖЕРЫ -->
+            <div class="block-card style-passport" style="border-left-color: #1d2a45;">
+                <div class="block-content">
+                    <!-- Застройщик -->
+                    <div style="margin-bottom: 16px;">
+                        <div class="label">МЕНЕДЖЕР ЗАСТРОЙЩИКА</div>
+                        <div class="action-row">
+                            <div class="value" style="margin-bottom: 0;">Ольга Исакова (Тест)</div>
+                            <button class="btn btn-outline">
+                                <i class="fa-solid fa-pen"></i> ОБРАТНАЯ СВЯЗЬ
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="height: 1px; background: #eee; margin: 12px 0;"></div>
+
+                    <!-- ПИА -->
+                    <div>
+                        <div class="label">ОТВЕТСТВЕННЫЙ (ПИА)</div>
+                        <div class="action-row">
+                            <div class="value" style="margin-bottom: 0;">Иван Иванов</div>
+                            <button class="btn btn-outline">
+                                <i class="fa-solid fa-arrow-right-arrow-left"></i> ПЕРЕДАТЬ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. БЛОК ДЕТАЛИ -->
+            <div class="block-card style-details">
+                <div class="block-content" onclick="toggleAccordion('details-acc', document.getElementById('details-chevron'))" style="cursor: pointer;">
+                    <div class="action-row">
+                        <div>
+                            <div class="label">ОБЪЕКТ</div>
+                            <div class="value" style="margin-bottom: 0;">2-к кв, 10.5 млн ₽</div>
+                        </div>
+                        <i id="details-chevron" class="fa-solid fa-chevron-down chevron"></i>
+                    </div>
+                </div>
+                
+                <div id="details-acc" class="accordion-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
+                        <div>
+                            <div class="label">ПРОГРАММА</div><div class="value">Trade-In</div>
+                        </div>
+                        <div>
+                            <div class="label">ФОРМА ОПЛАТЫ</div><div class="value">Ипотека</div>
+                        </div>
+                        <div>
+                            <div class="label">ЭТАЖ</div><div class="value">5 / 12</div>
+                        </div>
+                        <div>
+                            <div class="label">СРОК</div><div class="value">IV кв. 2026</div>
+                        </div>
+                    </div>
+                    <!-- Переход -->
+                    <div style="margin-top: 16px;">
+                        <button class="btn btn-gold">
+                            <i class="fa-solid fa-file-lines"></i> ПЕРЕЙТИ К АНКЕТЕ
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- End container -->
+
+        <!-- FAB -->
+        <div class="fab">
+            <i class="fa-solid fa-plus"></i>
+        </div>
+
+    </div> <!-- End phone-frame -->
+
+    <script>
+        function toggleAccordion(id, iconElement) {
+            const content = document.getElementById(id);
+            const icon = iconElement.querySelector('.chevron') || iconElement;
+            content.classList.toggle('open');
+            icon.classList.toggle('rotate');
+        }
+    </script>
+</body>
+</html>
